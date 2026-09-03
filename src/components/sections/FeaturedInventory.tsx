@@ -1,5 +1,6 @@
 "use client";
 
+import { motion, useReducedMotion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
@@ -23,6 +24,8 @@ const FEATURED_VEHICLES = [
     image: "/images/vehicles/BMW-Collection-MainImage.png",
     category: "PERFORMANCE",
     colSpan: "lg:col-span-8",
+    desktopHeight: "lg:h-[430px]",
+    featured: true,
   },
   {
     id: "mercedes-s-class",
@@ -33,6 +36,8 @@ const FEATURED_VEHICLES = [
     image: "/images/vehicles/S-Class.jpeg",
     category: "LUXURY",
     colSpan: "lg:col-span-4",
+    desktopHeight: "lg:h-[430px]",
+    featured: false,
   },
   {
     id: "bentley-continental-gt",
@@ -43,6 +48,8 @@ const FEATURED_VEHICLES = [
     image: "/images/vehicles/Continental-GT.jpeg",
     category: "LUXURY",
     colSpan: "lg:col-span-5",
+    desktopHeight: "lg:h-[330px]",
+    featured: false,
   },
   {
     id: "rolls-royce-ghost",
@@ -53,11 +60,14 @@ const FEATURED_VEHICLES = [
     image: "/images/vehicles/Rolls-Royce-Ghost.png",
     category: "LUXURY",
     colSpan: "lg:col-span-7",
+    desktopHeight: "lg:h-[330px]",
+    featured: false,
   },
 ];
 
 export default function FeaturedInventory() {
   const [activeCategory, setActiveCategory] = useState("ALL");
+  const shouldReduceMotion = useReducedMotion();
 
   const filteredVehicles =
     activeCategory === "ALL"
@@ -66,156 +76,245 @@ export default function FeaturedInventory() {
           (vehicle) => vehicle.category === activeCategory
         );
 
-  return (
-    <section className="w-full bg-[#f4f0eb] text-[#0f1e19] py-14 md:py-16 px-6 md:px-10">
-      <div className="max-w-[1500px] mx-auto">
+  const revealAnimation = shouldReduceMotion
+    ? {
+        initial: { opacity: 1 },
+        whileInView: { opacity: 1 },
+      }
+    : {
+        initial: {
+          opacity: 0,
+          y: 45,
+          scale: 0.985,
+        },
+        whileInView: {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+        },
+      };
 
+  return (
+    <section className="w-full bg-[#f4f0eb] text-[#0f1e19] px-5 py-20 sm:px-6 md:px-10 md:py-24 lg:py-28">
+      <div className="mx-auto max-w-[1500px]">
         {/* ============================================================
             SECTION HEADER
             ============================================================ */}
 
-        <div className="mb-8 md:mb-9">
-          <div className="flex items-center gap-3 mb-3">
-            <span className="text-[10px] md:text-[11px] tracking-[0.25em] text-[#9a6237] uppercase font-semibold">
+        <motion.div
+          initial={
+            shouldReduceMotion
+              ? { opacity: 1 }
+              : { opacity: 0, y: 30 }
+          }
+          whileInView={
+            shouldReduceMotion
+              ? { opacity: 1 }
+              : { opacity: 1, y: 0 }
+          }
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{
+            duration: 0.8,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="mb-10 md:mb-12"
+        >
+          <div className="mb-4 flex items-center gap-3">
+            <span className="h-px w-7 bg-[#9a6237]" />
+
+            <span className="text-[9px] font-semibold uppercase tracking-[0.3em] text-[#9a6237] sm:text-[10px]">
               02 / The Collection
             </span>
           </div>
 
-          <h2
-            className="font-serif text-4xl sm:text-5xl md:text-6xl tracking-tight text-[#0f1e19] uppercase font-light mb-3 leading-[0.95]"
-            style={{
-              fontVariationSettings: '"SOFT" 100, "opsz" 144',
-            }}
-          >
-            THE COLLECTION
-          </h2>
+          <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+            <h2
+              className="max-w-[700px] font-serif text-4xl font-light uppercase leading-[0.9] tracking-[-0.03em] text-[#0f1e19] sm:text-5xl md:text-6xl lg:text-7xl"
+              style={{
+                fontVariationSettings: '"SOFT" 100, "opsz" 144',
+              }}
+            >
+              THE
+              <br />
+              COLLECTION
+            </h2>
 
-          <p className="text-xs md:text-sm text-[#4a4e4b] font-light tracking-wide">
-            Exceptional automobiles, selected with intention.
-          </p>
-        </div>
+            <p className="max-w-[310px] text-xs font-light leading-[1.7] tracking-wide text-[#4a4e4b] md:text-sm lg:pb-1">
+              Exceptional automobiles, selected with intention. Every vehicle
+              earns its place.
+            </p>
+          </div>
+        </motion.div>
 
         {/* ============================================================
             CATEGORY NAVIGATION
             ============================================================ */}
 
-        <div className="flex items-center gap-6 md:gap-8 mb-8 border-b border-[#0f1e19]/10 pb-3 overflow-x-auto scrollbar-hide">
-          {CATEGORIES.map((category) => (
-            <button
-              key={category}
-              onClick={() => setActiveCategory(category)}
-              className={`text-[10px] md:text-[11px] tracking-[0.25em] font-medium uppercase transition-colors relative pb-2 whitespace-nowrap ${
-                activeCategory === category
-                  ? "text-[#0f1e19]"
-                  : "text-[#7a7e7b] hover:text-[#0f1e19]"
-              }`}
-            >
-              {category}
+        <motion.div
+          initial={
+            shouldReduceMotion
+              ? { opacity: 1 }
+              : { opacity: 0, y: 20 }
+          }
+          whileInView={
+            shouldReduceMotion
+              ? { opacity: 1 }
+              : { opacity: 1, y: 0 }
+          }
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{
+            duration: 0.7,
+            delay: shouldReduceMotion ? 0 : 0.1,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="mb-7 overflow-x-auto border-b border-[#0f1e19]/10 scrollbar-hide md:mb-8"
+        >
+          <div className="flex min-w-max items-center gap-7 pb-3 sm:gap-8 md:gap-10">
+            {CATEGORIES.map((category) => {
+              const isActive = activeCategory === category;
 
-              {activeCategory === category && (
-                <span className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#9a6237]" />
-              )}
-            </button>
-          ))}
-        </div>
+              return (
+                <button
+                  key={category}
+                  type="button"
+                  onClick={() => setActiveCategory(category)}
+                  aria-pressed={isActive}
+                  className={`group relative pb-2 text-[9px] font-medium uppercase tracking-[0.25em] transition-colors duration-300 sm:text-[10px] md:text-[11px] ${
+                    isActive
+                      ? "text-[#0f1e19]"
+                      : "text-[#7a7e7b] hover:text-[#0f1e19]"
+                  }`}
+                >
+                  {category}
+
+                  <span
+                    className={`absolute bottom-0 left-0 h-[1px] bg-[#9a6237] transition-all duration-300 ${
+                      isActive ? "w-full" : "w-0 group-hover:w-full"
+                    }`}
+                  />
+                </button>
+              );
+            })}
+          </div>
+        </motion.div>
 
         {/* ============================================================
-            ASYMMETRIC BENTO GRID
-
-            Fixed/controlled card heights keep the cinematic reveal
-            stable even when categories are filtered.
+            ASYMMETRIC BENTO GALLERY
             ============================================================ */}
 
-        <div
-          className="
-            grid
-            grid-cols-1
-            lg:grid-cols-12
-            gap-4
-            md:gap-5
-            mb-10
-            min-h-[620px]
-            lg:min-h-[640px]
-          "
-        >
-          {filteredVehicles.map((car) => (
-            <div
+        <div className="grid grid-cols-1 gap-4 md:gap-5 lg:grid-cols-12">
+          {filteredVehicles.map((car, index) => (
+            <motion.article
               key={car.id}
+              layout
+              {...revealAnimation}
+              viewport={{
+                once: true,
+                amount: 0.12,
+              }}
+              transition={{
+                layout: {
+                  duration: 0.5,
+                  ease: [0.16, 1, 0.3, 1],
+                },
+                opacity: {
+                  duration: shouldReduceMotion ? 0 : 0.8,
+                  delay: shouldReduceMotion ? 0 : index * 0.08,
+                  ease: [0.16, 1, 0.3, 1],
+                },
+                y: {
+                  duration: shouldReduceMotion ? 0 : 0.8,
+                  delay: shouldReduceMotion ? 0 : index * 0.08,
+                  ease: [0.16, 1, 0.3, 1],
+                },
+                scale: {
+                  duration: shouldReduceMotion ? 0 : 0.8,
+                  delay: shouldReduceMotion ? 0 : index * 0.08,
+                  ease: [0.16, 1, 0.3, 1],
+                },
+              }}
               className={`
-                relative
-                h-[280px]
-                md:h-[300px]
-                lg:h-[300px]
-                rounded-xl
-                overflow-hidden
                 group
+                relative
+                overflow-hidden
+                rounded-[2px]
                 ${car.colSpan}
+                ${car.desktopHeight}
+                ${car.featured ? "h-[390px] sm:h-[430px]" : "h-[300px] sm:h-[330px]"}
               `}
             >
-              {/* Vehicle Image */}
-
-              <Image
-                src={car.image}
-                alt={car.name}
-                fill
-                sizes="(max-width: 1024px) 100vw, 50vw"
-                className="
-                  object-cover
-                  object-center
-                  group-hover:scale-105
-                  transition-transform
-                  duration-700
-                  ease-out
-                "
+              <Link
+                href={`/inventory/${car.id}`}
+                className="absolute inset-0 z-20"
+                aria-label={`View ${car.name}`}
               />
 
-              {/* Gradient Overlay */}
+              {/* ======================================================
+                  IMAGE
+                  ====================================================== */}
 
-              <div
-                className="
-                  absolute
-                  inset-0
-                  bg-gradient-to-r
-                  from-black/70
-                  via-black/30
-                  to-transparent
-                  pointer-events-none
-                "
-              />
-
-              {/* Card Content */}
-
-              <div
-                className="
-                  absolute
-                  inset-0
-                  p-6
-                  md:p-7
-                  flex
-                  flex-col
-                  justify-between
-                  z-10
-                  text-white
-                "
+              <motion.div
+                className="absolute inset-0"
+                initial={{ scale: 1.04 }}
+                whileInView={{ scale: 1 }}
+                viewport={{ once: true }}
+                transition={{
+                  duration: shouldReduceMotion ? 0 : 1.2,
+                  delay: shouldReduceMotion ? 0 : index * 0.08,
+                  ease: [0.16, 1, 0.3, 1],
+                }}
               >
-                {/* Top */}
+                <Image
+                  src={car.image}
+                  alt={car.name}
+                  fill
+                  sizes={
+                    car.featured
+                      ? "(max-width: 1024px) 100vw, 66vw"
+                      : "(max-width: 1024px) 100vw, 50vw"
+                  }
+                  className="object-cover object-center transition-transform duration-1000 ease-out group-hover:scale-[1.045]"
+                />
+              </motion.div>
+
+              {/* ======================================================
+                  IMAGE OVERLAYS
+                  ====================================================== */}
+
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-black/75 via-black/30 to-transparent" />
+
+              <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/65 via-transparent to-black/10" />
+
+              {/* Subtle hover wash */}
+
+              <div className="pointer-events-none absolute inset-0 bg-[#0f1e19]/0 transition-colors duration-700 group-hover:bg-[#0f1e19]/10" />
+
+              {/* ======================================================
+                  CARD CONTENT
+                  ====================================================== */}
+
+              <div className="pointer-events-none absolute inset-0 z-10 flex flex-col justify-between p-5 text-white sm:p-6 md:p-7">
+                {/* Top information */}
 
                 <div>
-                  <span className="text-[10px] md:text-xs font-mono text-gray-300 tracking-widest block mb-1">
-                    {car.year}
-                  </span>
+                  <div className="mb-2 flex items-center gap-2">
+                    <span className="text-[9px] font-medium tracking-[0.22em] text-white/65 sm:text-[10px]">
+                      {car.year}
+                    </span>
+
+                    <span className="h-px w-5 bg-white/30" />
+
+                    <span className="text-[8px] font-medium uppercase tracking-[0.2em] text-white/50">
+                      {car.category}
+                    </span>
+                  </div>
 
                   <h3
-                    className="
-                      font-serif
-                      text-xl
-                      md:text-2xl
-                      tracking-tight
-                      max-w-xs
-                      font-light
-                      uppercase
-                      leading-tight
-                    "
+                    className={`max-w-[340px] font-serif font-light uppercase leading-[0.95] tracking-[-0.02em] ${
+                      car.featured
+                        ? "text-2xl sm:text-3xl md:text-4xl"
+                        : "text-xl sm:text-2xl md:text-3xl"
+                    }`}
                     style={{
                       fontVariationSettings: '"SOFT" 100, "opsz" 144',
                     }}
@@ -224,76 +323,86 @@ export default function FeaturedInventory() {
                   </h3>
                 </div>
 
-                {/* Bottom */}
+                {/* Bottom information */}
 
-                <div>
-                  <p className="text-[10px] md:text-[11px] text-gray-300 font-light tracking-wide mb-0.5">
-                    {car.engine}
-                  </p>
+                <div className="flex items-end justify-between gap-4">
+                  <div>
+                    <p className="mb-1 text-[9px] font-light tracking-[0.08em] text-white/70 sm:text-[10px] md:text-[11px]">
+                      {car.engine}
+                    </p>
 
-                  <p className="text-[10px] md:text-[11px] text-gray-400 font-light tracking-wide uppercase mb-4">
-                    {car.specs}
-                  </p>
+                    <p className="text-[9px] font-light uppercase tracking-[0.12em] text-white/50 sm:text-[10px] md:text-[11px]">
+                      {car.specs}
+                    </p>
+                  </div>
 
-                  <Link
-                    href={`/inventory/${car.id}`}
-                    className="
-                      inline-flex
-                      items-center
-                      gap-2
-                      text-[9px]
-                      md:text-[10px]
-                      tracking-[0.25em]
-                      text-[#c59b72]
-                      hover:text-white
-                      uppercase
-                      font-semibold
-                      transition-colors
-                    "
-                  >
-                    <span>View Details</span>
+                  <div className="hidden items-center gap-2 border-b border-white/40 pb-1 text-[9px] font-semibold uppercase tracking-[0.22em] text-white transition-colors duration-300 group-hover:border-[#c59b72] group-hover:text-[#c59b72] sm:flex md:text-[10px]">
+                    <span>View</span>
 
-                    <ArrowRight className="w-3.5 h-3.5" />
-                  </Link>
+                    <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+                  </div>
+                </div>
+
+                {/* Mobile view indicator */}
+
+                <div className="absolute bottom-5 right-5 flex h-9 w-9 items-center justify-center rounded-full border border-white/25 bg-black/10 backdrop-blur-[2px] sm:hidden">
+                  <ArrowRight className="h-3.5 w-3.5 text-white" />
                 </div>
               </div>
-            </div>
+            </motion.article>
           ))}
         </div>
+
+        {/* ============================================================
+            EMPTY STATE
+            ============================================================ */}
+
+        {filteredVehicles.length === 0 && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            className="flex min-h-[260px] items-center justify-center border border-[#0f1e19]/10"
+          >
+            <p className="text-[10px] uppercase tracking-[0.25em] text-[#6f706a]">
+              No vehicles currently available
+            </p>
+          </motion.div>
+        )}
 
         {/* ============================================================
             BOTTOM CTA
             ============================================================ */}
 
-        <div className="flex justify-center">
+        <motion.div
+          initial={
+            shouldReduceMotion
+              ? { opacity: 1 }
+              : { opacity: 0, y: 25 }
+          }
+          whileInView={
+            shouldReduceMotion
+              ? { opacity: 1 }
+              : { opacity: 1, y: 0 }
+          }
+          viewport={{ once: true, amount: 0.25 }}
+          transition={{
+            duration: 0.8,
+            delay: shouldReduceMotion ? 0 : 0.1,
+            ease: [0.16, 1, 0.3, 1],
+          }}
+          className="mt-10 flex justify-center md:mt-12"
+        >
           <Link
             href="/inventory"
-            className="
-              inline-flex
-              items-center
-              gap-4
-              px-9
-              md:px-10
-              py-4
-              border
-              border-[#8c7457]/40
-              text-[#0f1e19]
-              text-[9px]
-              md:text-[10px]
-              tracking-[0.25em]
-              uppercase
-              font-semibold
-              hover:bg-[#0f1e19]
-              hover:text-[#e7e3dc]
-              transition-all
-              duration-300
-            "
+            className="group relative inline-flex items-center gap-4 overflow-hidden border border-[#8c7457]/40 px-8 py-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#0f1e19] transition-colors duration-300 hover:bg-[#0f1e19] hover:text-[#e7e3dc] sm:px-9 md:px-10 md:text-[10px]"
           >
-            <span>View All Inventory</span>
+            <span className="relative z-10">View All Inventory</span>
 
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="relative z-10 h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+
+            <span className="absolute inset-0 -z-0 translate-y-full bg-[#0f1e19] transition-transform duration-500 ease-out group-hover:translate-y-0" />
           </Link>
-        </div>
+        </motion.div>
       </div>
     </section>
   );

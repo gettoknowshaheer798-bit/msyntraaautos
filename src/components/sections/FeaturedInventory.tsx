@@ -236,7 +236,7 @@ export default function FeaturedInventory() {
                   </p>
 
                   <Link
-                    href={`/catalog/${car.id}`}
+                    href={`/inventory/${car.id}`}
                     className="
                       inline-flex
                       items-center

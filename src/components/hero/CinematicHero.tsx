@@ -91,7 +91,7 @@ export default function CinematicHero() {
           <div className="inline-block relative group">
             <div className="absolute -inset-0.5 border border-[#8c7457]/40 translate-x-1 translate-y-1 transition-transform group-hover:translate-x-0.5 group-hover:translate-y-0.5" />
             <Link
-              href="/catalog"
+              href="/inventory"
               className="relative inline-flex items-center gap-5 px-8 py-4 bg-[#0d1c17] text-[#e7e3dc] text-[10px] tracking-[0.25em] uppercase font-medium hover:bg-[#142822] transition-colors"
             >
               <span>Explore Collection</span>

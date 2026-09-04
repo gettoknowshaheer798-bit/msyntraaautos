@@ -1,285 +1,295 @@
 "use client";
 
 import type { Vehicle } from "@/types/vehicle";
-
-import { motion, useReducedMotion } from "framer-motion";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
 import {
-  ArrowRight,
+  ArrowUpRight,
   Calendar,
-  CheckCircle2,
-  Phone,
+  FileCheck,
   Repeat2,
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 
+interface Props {
+  vehicle: Vehicle;
+}
+
 export default function VehicleActionFooterSection({
   vehicle,
-}: {
-  vehicle: Vehicle;
-}) {
+}: Props) {
   const shouldReduceMotion = useReducedMotion();
 
-  const financing = vehicle.financingEstimate || {
-    monthly: "Contact us",
-    term: "Flexible terms",
-    apr: "Competitive APR",
-  };
-
-  const vehicleName = `${vehicle.year} ${vehicle.make} ${vehicle.model}`;
-
   const finalImage =
-    vehicle.galleryImages?.[vehicle.galleryImages.length - 1] ||
-    vehicle.actionImage ||
+    vehicle.galleryImages?.[vehicle.galleryImages.length - 1] ??
+    vehicle.actionImage ??
     vehicle.heroImage;
 
-  return (
-    <section className="relative overflow-hidden bg-[#07130e] px-6 pb-12 pt-24 text-[#e7e3dc] md:px-10 md:pb-16 md:pt-32 lg:px-16">
-      <div className="mx-auto max-w-[1500px]">
-        {/* OWNERSHIP HEADER */}
-        <motion.div
-          initial={
-            shouldReduceMotion
-              ? { opacity: 0 }
-              : { opacity: 0, y: 25 }
-          }
-          whileInView={{ opacity: 1, y: 0 }}
-          viewport={{ once: true, amount: 0.3 }}
-          transition={{ duration: 0.8 }}
-          className="mb-16"
-        >
-          <div className="mb-6 flex items-center gap-3">
-            <span className="text-[9px] font-semibold tracking-[0.35em] text-[#9e6d48]">
-              03 / OWNERSHIP
-            </span>
+  const reveal: Variants = {
+    hidden: {
+      opacity: 0,
+      y: shouldReduceMotion ? 0 : 25,
+    },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: {
+        duration: 0.75,
+        ease: "easeOut",
+      },
+    },
+  };
 
-            <span className="h-px w-10 bg-[#9e6d48]" />
+  const finance = vehicle.financingEstimate;
+
+  return (
+    <section className="bg-[#17251f] text-[#f4f0eb]">
+      {/* =====================================================
+          03 / OWNERSHIP
+      ====================================================== */}
+
+      <div className="mx-auto max-w-[1600px] px-5 py-24 sm:px-8 lg:px-12 lg:py-36">
+        <motion.div
+          variants={reveal}
+          initial="hidden"
+          whileInView="visible"
+          viewport={{ once: true, amount: 0.2 }}
+          className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]"
+        >
+          <div>
+            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+              03 / OWNERSHIP
+            </p>
           </div>
 
-          <h2 className="max-w-4xl font-serif text-4xl font-light leading-[0.95] tracking-[-0.025em] md:text-6xl">
-            Make the next move
-            <br />
-            <span className="text-white/35">
-              entirely your own.
-            </span>
-          </h2>
+          <div>
+            <h2 className="max-w-4xl text-5xl font-light leading-[0.94] tracking-[-0.055em] sm:text-6xl lg:text-8xl">
+              Make the next move
+              <br />
+              <span className="text-white/35">
+                entirely your own.
+              </span>
+            </h2>
+          </div>
         </motion.div>
 
-        {/* OWNERSHIP OPTIONS */}
-        <div className="grid grid-cols-1 gap-px bg-[#1c3028] md:grid-cols-3">
+        {/* =================================================
+            OWNERSHIP OPTIONS
+        ================================================== */}
+
+        <div className="mt-20 grid gap-px overflow-hidden bg-white/10 lg:mt-28 lg:grid-cols-3">
           {/* INSPECTION */}
-          <div className="group bg-[#0b1b14] p-8 transition-colors duration-500 hover:bg-[#10251c] md:p-10">
-            <div className="mb-14 flex items-start justify-between">
-              <span className="text-[9px] font-semibold tracking-[0.3em] text-[#9e6d48]">
-                INSPECTION
-              </span>
 
-              <CheckCircle2 className="h-4 w-4 text-[#9e6d48]" />
-            </div>
+          <motion.div
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.15 }}
+            className="group bg-[#17251f] p-8 sm:p-10 lg:p-12"
+          >
+            <FileCheck
+              size={25}
+              strokeWidth={1.1}
+              className="text-[#a8754d]"
+            />
 
-            <h3 className="mb-4 font-serif text-2xl font-light">
+            <p className="mt-10 text-[10px] tracking-[0.25em] text-white/40">
+              INSPECTION
+            </p>
+
+            <h3 className="mt-4 text-3xl font-light tracking-[-0.04em]">
               Confidence,
               <br />
               before commitment.
             </h3>
 
-            <p className="mb-10 text-xs font-light leading-7 text-white/40">
+            <p className="mt-6 text-sm leading-6 text-white/50">
               Review the vehicle condition, mechanical inspection and
               documentation before making your decision.
             </p>
 
             <Link
-              href={`/contact?vehicle=${encodeURIComponent(
-                vehicleName
-              )}&type=inspection`}
-              className="inline-flex items-center gap-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#b07d58] transition-colors hover:text-white"
+              href="/contact"
+              className="mt-10 inline-flex items-center gap-3 border-b border-white/20 pb-2 text-[10px] tracking-[0.2em] transition-colors hover:border-[#a8754d] hover:text-[#a8754d]"
             >
-              Request Inspection
+              REQUEST INSPECTION
 
-              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowUpRight
+                size={14}
+                strokeWidth={1.3}
+              />
             </Link>
-          </div>
+          </motion.div>
 
           {/* FINANCING */}
-          <div className="group bg-[#0b1b14] p-8 transition-colors duration-500 hover:bg-[#10251c] md:p-10">
-            <div className="mb-14 flex items-start justify-between">
-              <span className="text-[9px] font-semibold tracking-[0.3em] text-[#9e6d48]">
-                FINANCING
-              </span>
 
-              <span className="text-[8px] tracking-[0.2em] text-white/30">
-                ESTIMATE
-              </span>
-            </div>
+          <motion.div
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.15 }}
+            className="bg-[#17251f] p-8 sm:p-10 lg:p-12"
+          >
+            <Calendar
+              size={25}
+              strokeWidth={1.1}
+              className="text-[#a8754d]"
+            />
 
-            <div className="mb-2 font-serif text-4xl font-light text-white">
-              {financing.monthly}
+            <p className="mt-10 text-[10px] tracking-[0.25em] text-white/40">
+              FINANCING ESTIMATE
+            </p>
 
-              <span className="ml-2 font-sans text-xs text-white/35">
+            <p className="mt-4 text-4xl font-light tracking-[-0.05em]">
+              {finance?.monthly ?? "—"}
+
+              <span className="ml-2 text-sm tracking-normal text-white/35">
                 / month
               </span>
-            </div>
+            </p>
 
-            <div className="mb-8 text-[9px] tracking-[0.2em] text-white/35">
-              {financing.term} · {financing.apr}
-            </div>
+            <p className="mt-3 text-xs tracking-[0.12em] text-white/40">
+              {finance?.term ?? "Contact us"} ·{" "}
+              {finance?.apr ?? "APR varies"}
+            </p>
 
-            <p className="mb-10 text-xs font-light leading-7 text-white/40">
-              A starting estimate based on this vehicle. Final terms
-              depend on approval, deposit and selected financing
-              structure.
+            <p className="mt-6 text-sm leading-6 text-white/50">
+              A starting estimate based on this vehicle. Final terms depend
+              on approval, deposit and selected financing structure.
             </p>
 
             <Link
-              href={`/financing?vehicle=${encodeURIComponent(
-                vehicleName
-              )}`}
-              className="inline-flex items-center gap-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#b07d58] transition-colors hover:text-white"
+              href="/financing"
+              className="mt-10 inline-flex items-center gap-3 border-b border-white/20 pb-2 text-[10px] tracking-[0.2em] transition-colors hover:border-[#a8754d] hover:text-[#a8754d]"
             >
-              Explore Financing
+              EXPLORE FINANCING
 
-              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowUpRight
+                size={14}
+                strokeWidth={1.3}
+              />
             </Link>
-          </div>
+          </motion.div>
 
           {/* TRADE IN */}
-          <div className="group bg-[#0b1b14] p-8 transition-colors duration-500 hover:bg-[#10251c] md:p-10">
-            <div className="mb-14 flex items-start justify-between">
-              <span className="text-[9px] font-semibold tracking-[0.3em] text-[#9e6d48]">
-                TRADE-IN
-              </span>
 
-              <Repeat2 className="h-4 w-4 text-[#9e6d48]" />
-            </div>
+          <motion.div
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.15 }}
+            className="bg-[#17251f] p-8 sm:p-10 lg:p-12"
+          >
+            <Repeat2
+              size={25}
+              strokeWidth={1.1}
+              className="text-[#a8754d]"
+            />
 
-            <h3 className="mb-4 font-serif text-2xl font-light">
+            <p className="mt-10 text-[10px] tracking-[0.25em] text-white/40">
+              TRADE-IN
+            </p>
+
+            <h3 className="mt-4 text-3xl font-light tracking-[-0.04em]">
               Bring your
               <br />
               current vehicle.
             </h3>
 
-            <p className="mb-10 text-xs font-light leading-7 text-white/40">
-              Tell us about your current vehicle and we'll help structure
-              the transition into your next one.
+            <p className="mt-6 text-sm leading-6 text-white/50">
+              Tell us about your current vehicle and we'll help structure the
+              transition into your next one.
             </p>
 
             <Link
-              href={`/trade-in?vehicle=${encodeURIComponent(
-                vehicleName
-              )}`}
-              className="inline-flex items-center gap-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#b07d58] transition-colors hover:text-white"
+              href="/trade-in"
+              className="mt-10 inline-flex items-center gap-3 border-b border-white/20 pb-2 text-[10px] tracking-[0.2em] transition-colors hover:border-[#a8754d] hover:text-[#a8754d]"
             >
-              Value My Trade
+              VALUE MY TRADE
 
-              <ArrowRight className="h-3.5 w-3.5 transition-transform duration-300 group-hover:translate-x-1" />
+              <ArrowUpRight
+                size={14}
+                strokeWidth={1.3}
+              />
             </Link>
-          </div>
+          </motion.div>
         </div>
+      </div>
 
-        {/* FINAL CINEMATIC CTA */}
-        <motion.div
-          initial={
-            shouldReduceMotion
-              ? { opacity: 0 }
-              : { opacity: 0, scale: 0.985 }
-          }
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true, amount: 0.2 }}
-          transition={{ duration: 1 }}
-          className="relative mt-24 min-h-[600px] overflow-hidden md:mt-32 md:min-h-[680px]"
-        >
-          <Image
-            src={finalImage}
-            alt={`${vehicle.make} ${vehicle.model}`}
-            fill
-            className="object-cover object-center"
-            sizes="100vw"
-          />
+      {/* =====================================================
+          FINAL CINEMATIC CTA
+      ====================================================== */}
 
-          <div className="absolute inset-0 bg-[#07130e]/65" />
-          <div className="absolute inset-0 bg-gradient-to-r from-[#07130e]/95 via-[#07130e]/55 to-transparent" />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#07130e]/80 via-transparent to-[#07130e]/20" />
+      <div className="relative min-h-[680px] overflow-hidden sm:min-h-[760px]">
+        <Image
+          src={finalImage}
+          alt={`${vehicle.make} ${vehicle.model}`}
+          fill
+          sizes="100vw"
+          className="object-cover"
+        />
 
-          <div className="relative z-10 flex min-h-[600px] flex-col justify-between p-8 md:min-h-[680px] md:p-14 lg:p-20">
-            <div className="flex items-start justify-between">
-              <div>
-                <span className="mb-4 block text-[9px] font-semibold tracking-[0.35em] text-[#bda68f]">
-                  READY TO EXPERIENCE IT?
-                </span>
+        {/* Image treatment */}
 
-                <span className="text-[8px] tracking-[0.3em] text-white/40">
-                  {vehicle.year} / {vehicle.make} / {vehicle.model}
-                </span>
-              </div>
+        <div className="absolute inset-0 bg-[#07100c]/55" />
 
-              <span className="hidden text-[8px] tracking-[0.3em] text-white/35 md:block">
-                MSYNTRA / 03
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07100c] via-[#07100c]/10 to-[#07100c]/20" />
+
+        {/* CTA */}
+
+        <div className="relative flex min-h-[680px] flex-col justify-end px-5 pb-10 sm:min-h-[760px] sm:px-8 sm:pb-14 lg:px-12 lg:pb-16">
+          <motion.div
+            initial={{
+              opacity: 0,
+              y: shouldReduceMotion ? 0 : 30,
+            }}
+            whileInView={{
+              opacity: 1,
+              y: 0,
+            }}
+            viewport={{
+              once: true,
+              amount: 0.2,
+            }}
+            transition={{
+              duration: 0.9,
+              ease: "easeOut",
+            }}
+            className="max-w-5xl"
+          >
+            <p className="text-[10px] tracking-[0.3em] text-white/55">
+              READY TO EXPERIENCE IT?
+            </p>
+
+            <h2 className="mt-5 text-4xl font-light leading-[0.95] tracking-[-0.05em] text-white sm:text-6xl lg:text-7xl">
+              Some cars make sense
+              <br />
+              <span className="text-white/45">
+                once you're behind the wheel.
               </span>
+            </h2>
+
+            <p className="mt-8 max-w-xl text-sm leading-6 text-white/55 sm:text-base">
+              Arrange a private viewing or test drive for the{" "}
+              {vehicle.year} {vehicle.make} {vehicle.model}.
+            </p>
+
+            <div className="mt-10 flex flex-col gap-3 sm:flex-row">
+              <Link
+                href="/contact"
+                className="inline-flex h-14 items-center justify-center bg-[#f4f0eb] px-7 text-[10px] font-medium tracking-[0.22em] text-[#102019] transition-colors hover:bg-white"
+              >
+                BOOK A VIEWING
+              </Link>
+
+              <Link
+                href="/contact"
+                className="inline-flex h-14 items-center justify-center border border-white/30 px-7 text-[10px] font-medium tracking-[0.22em] text-white transition-colors hover:border-white"
+              >
+                SCHEDULE TEST DRIVE
+              </Link>
             </div>
-
-            <div className="grid grid-cols-1 gap-12 lg:grid-cols-12 lg:items-end">
-              <div className="lg:col-span-8">
-                <h2 className="max-w-4xl font-serif text-5xl font-light leading-[0.9] tracking-[-0.035em] text-white md:text-7xl lg:text-[88px]">
-                  Some cars make sense
-                  <br />
-                  <span className="text-white/40">
-                    once you're behind the wheel.
-                  </span>
-                </h2>
-
-                <p className="mt-7 max-w-xl text-xs font-light leading-7 text-white/45">
-                  Arrange a private viewing or test drive for the{" "}
-                  <span className="text-white/75">
-                    {vehicleName}
-                  </span>
-                  .
-                </p>
-              </div>
-
-              <div className="flex flex-col gap-3 sm:flex-row lg:col-span-4 lg:flex-col">
-                <Link
-                  href={`/contact?vehicle=${encodeURIComponent(
-                    vehicleName
-                  )}&type=viewing`}
-                  className="inline-flex items-center justify-center gap-3 bg-[#b07d58] px-7 py-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#07130e] transition-all hover:bg-[#e7e3dc]"
-                >
-                  Book a Viewing
-
-                  <Calendar className="h-3.5 w-3.5" />
-                </Link>
-
-                <Link
-                  href={`/contact?vehicle=${encodeURIComponent(
-                    vehicleName
-                  )}&type=test-drive`}
-                  className="inline-flex items-center justify-center gap-3 border border-white/25 bg-black/10 px-7 py-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-white/75 backdrop-blur-sm transition-all hover:border-white/60 hover:bg-black/20 hover:text-white"
-                >
-                  Schedule Test Drive
-
-                  <ArrowRight className="h-3.5 w-3.5" />
-                </Link>
-              </div>
-            </div>
-          </div>
-        </motion.div>
-
-        {/* FOOTER NAV */}
-        <div className="mt-12 flex flex-col gap-6 border-t border-[#1c3028] pt-8 sm:flex-row sm:items-center sm:justify-between">
-          <Link
-            href="/inventory"
-            className="inline-flex items-center gap-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-white/45 transition-colors hover:text-white"
-          >
-            <ArrowRight className="h-3.5 w-3.5 rotate-180" />
-            Back to Collection
-          </Link>
-
-          <a
-            href="tel:+1111000888"
-            className="inline-flex items-center gap-3 text-[9px] font-semibold uppercase tracking-[0.25em] text-white/45 transition-colors hover:text-white"
-          >
-            <Phone className="h-3.5 w-3.5" />
-            Call MSyntra
-          </a>
+          </motion.div>
         </div>
       </div>
     </section>

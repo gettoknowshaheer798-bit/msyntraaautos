@@ -2,14 +2,14 @@
 
 import type { Vehicle } from "@/types/vehicle";
 
+import { motion, useReducedMotion } from "framer-motion";
 import {
   ArrowUpRight,
   Check,
   CheckCircle2,
   ShieldCheck,
 } from "lucide-react";
-
-import { motion, useReducedMotion } from "framer-motion";
+import Image from "next/image";
 
 export default function VehicleFeaturesHistorySection({
   vehicle,
@@ -28,31 +28,94 @@ export default function VehicleFeaturesHistorySection({
 
   const features = vehicle.features || [];
 
+  const detailImage =
+    vehicle.galleryImages?.[3] ||
+    vehicle.galleryImages?.[2] ||
+    vehicle.actionImage ||
+    vehicle.heroImage;
+
   return (
     <section className="relative overflow-hidden bg-[#e5ded1] px-6 py-24 md:px-10 md:py-32 lg:px-16">
       <div className="mx-auto max-w-[1500px]">
         {/* HEADER */}
         <div className="mb-16 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-end">
-          <div className="lg:col-span-7">
+          <motion.div
+            initial={
+              shouldReduceMotion
+                ? { opacity: 0 }
+                : { opacity: 0, y: 25 }
+            }
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.8 }}
+            className="lg:col-span-7"
+          >
             <div className="mb-6 flex items-center gap-3">
               <span className="text-[9px] font-semibold tracking-[0.35em] text-[#9e6d48]">
                 02 / THE DETAILS
               </span>
+
               <span className="h-px w-10 bg-[#9e6d48]" />
             </div>
 
             <h2 className="max-w-4xl font-serif text-4xl font-light leading-[0.95] tracking-[-0.025em] text-[#0d1c17] md:text-6xl">
               Nothing unnecessary.
               <br />
-              <span className="text-[#6f706a]">Nothing overlooked.</span>
+              <span className="text-[#6f706a]">
+                Nothing overlooked.
+              </span>
             </h2>
-          </div>
+          </motion.div>
 
-          <p className="max-w-md text-sm font-light leading-7 text-[#5d6863] lg:col-span-5 lg:justify-self-end">
-            Every vehicle entering the MSyntra collection is considered for
-            specification, condition, provenance and overall suitability.
-          </p>
+          <motion.p
+            initial={
+              shouldReduceMotion
+                ? { opacity: 0 }
+                : { opacity: 0, y: 20 }
+            }
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.8, delay: 0.1 }}
+            className="max-w-md text-sm font-light leading-7 text-[#5d6863] lg:col-span-5 lg:justify-self-end"
+          >
+            Every vehicle entering the MSyntra collection is considered
+            for specification, condition, provenance and overall
+            suitability.
+          </motion.p>
         </div>
+
+        {/* FEATURE IMAGE */}
+        <motion.div
+          initial={
+            shouldReduceMotion
+              ? { opacity: 0 }
+              : { opacity: 0, scale: 0.985 }
+          }
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true, amount: 0.2 }}
+          transition={{ duration: 1 }}
+          className="relative mb-20 h-[400px] overflow-hidden md:h-[560px]"
+        >
+          <Image
+            src={detailImage}
+            alt={`${vehicle.make} ${vehicle.model}`}
+            fill
+            className="object-cover transition-transform duration-[1600ms] hover:scale-[1.025]"
+            sizes="100vw"
+          />
+
+          <div className="absolute inset-0 bg-gradient-to-t from-[#07130e]/70 via-transparent to-transparent" />
+
+          <div className="absolute bottom-8 left-8 md:bottom-12 md:left-12">
+            <span className="mb-3 block text-[8px] font-semibold tracking-[0.35em] text-[#d0b69d]">
+              MSYNTRA COLLECTION
+            </span>
+
+            <span className="font-serif text-2xl font-light text-white md:text-4xl">
+              Considered from every angle.
+            </span>
+          </div>
+        </motion.div>
 
         <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-20">
           {/* FEATURES */}
@@ -94,13 +157,13 @@ export default function VehicleFeaturesHistorySection({
                     </span>
                   </div>
 
-                  <ArrowUpRight className="h-4 w-4 text-[#9e6d48] opacity-0 transition-all duration-500 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:opacity-100" />
+                  <ArrowUpRight className="h-4 w-4 text-[#9e6d48] opacity-0 transition-all duration-500 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:opacity-100" />
                 </motion.div>
               ))}
             </div>
           </div>
 
-          {/* HISTORY */}
+          {/* PROVENANCE */}
           <motion.div
             initial={
               shouldReduceMotion
@@ -112,7 +175,8 @@ export default function VehicleFeaturesHistorySection({
             transition={{ duration: 0.8 }}
             className="relative overflow-hidden bg-[#17251f] p-8 text-[#e7e3dc] md:p-10 lg:col-span-5"
           >
-            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-[#274238]/40 blur-3xl" />
+            <div className="absolute -right-20 -top-20 h-60 w-60 rounded-full border border-white/5" />
+            <div className="absolute -right-10 -top-10 h-40 w-40 rounded-full border border-white/5" />
 
             <div className="relative z-10">
               <div className="mb-12 flex items-start justify-between">
@@ -162,8 +226,8 @@ export default function VehicleFeaturesHistorySection({
                     </span>
 
                     <p className="text-[10px] leading-6 text-white/40">
-                      Vehicle information and condition are reviewed as part
-                      of our collection process.
+                      Vehicle information and condition are reviewed as
+                      part of our collection process.
                     </p>
                   </div>
                 </div>

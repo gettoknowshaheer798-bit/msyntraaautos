@@ -1,146 +1,324 @@
 "use client";
 
-import { Vehicle } from "@/types/vehicle";
-import { ArrowLeft, ArrowRight, Calendar, Gauge, Shield, Zap } from "lucide-react";
+import type { Vehicle } from "@/types/vehicle";
+
+import {
+  ArrowLeft,
+  Calendar,
+  ChevronLeft,
+  ChevronRight,
+  Gauge,
+  Shield,
+  Zap
+} from "lucide-react";
+
+import { AnimatePresence, motion, useReducedMotion } from "framer-motion";
 import Image from "next/image";
+import Link from "next/link";
 import { useState } from "react";
 
-export default function VehicleHeroSection({ vehicle }: { vehicle: Vehicle }) {
-  const gallery = vehicle.galleryImages && vehicle.galleryImages.length > 0 
-    ? vehicle.galleryImages 
-    : [vehicle.heroImage, vehicle.thumbnail, vehicle.actionImage].filter(Boolean) as string[];
+export default function VehicleHeroSection({
+  vehicle,
+}: {
+  vehicle: Vehicle;
+}) {
+  const shouldReduceMotion = useReducedMotion();
+
+  const gallery =
+    vehicle.galleryImages && vehicle.galleryImages.length > 0
+      ? vehicle.galleryImages
+      : Array.from(
+          new Set(
+            [vehicle.heroImage, vehicle.actionImage, vehicle.thumbnail].filter(
+              Boolean
+            )
+          )
+        );
 
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  return (
-    <section className="w-full bg-[#11231c] text-[#e7e3dc]">
-      {/* Upper Split Stage */}
-      <div className="grid grid-cols-1 lg:grid-cols-12 w-full">
-        
-        {/* Left Side: Full Aspect Image Stage */}
-        <div className="lg:col-span-8 relative w-full bg-[#0d1c17] flex items-center justify-center overflow-hidden">
-          
-          {/* Vertical Index Indicator Top-Left */}
-          <div className="absolute top-8 left-8 z-20 flex flex-col items-center gap-1 text-[10px] tracking-widest text-[#8a9a93] font-mono select-none">
-            <span>{String(currentIndex + 1).padStart(2, "0")}</span>
-            <div className="w-[1px] h-6 bg-[#213830]" />
-            <span>{String(gallery.length).padStart(2, "0")}</span>
-          </div>
+  const currentImage = gallery[currentIndex] || vehicle.heroImage;
 
-          {/* Uncropped Aspect Image Container */}
-          <div className="relative w-full aspect-[16/10] sm:aspect-[16/9]">
+  const previousImage = () => {
+    setCurrentIndex((prev) =>
+      prev === 0 ? gallery.length - 1 : prev - 1
+    );
+  };
+
+  const nextImage = () => {
+    setCurrentIndex((prev) =>
+      prev === gallery.length - 1 ? 0 : prev + 1
+    );
+  };
+
+  return (
+    <section className="relative overflow-hidden bg-[#0b1712] text-[#e7e3dc]">
+      {/* TOP NAVIGATION */}
+      <div className="absolute inset-x-0 top-0 z-40">
+        <div className="flex items-center justify-between px-6 py-6 md:px-10 lg:px-16">
+          <Link
+            href="/inventory"
+            className="group inline-flex items-center gap-3 text-[10px] tracking-[0.25em] uppercase text-[#c3cec8] transition-colors hover:text-white"
+          >
+            <span className="flex h-8 w-8 items-center justify-center rounded-full border border-white/15 transition-all group-hover:border-[#9e6d48]">
+              <ArrowLeft className="h-3.5 w-3.5" />
+            </span>
+            <span className="hidden sm:inline">Back to Collection</span>
+          </Link>
+
+          <div className="text-right">
+            <div className="font-serif text-lg tracking-[0.18em] text-white">
+              MSYNTRA
+            </div>
+            <div className="text-[7px] tracking-[0.45em] text-[#9e6d48]">
+              AUTOMOTIVE
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* CINEMATIC IMAGE */}
+      <div className="relative min-h-[760px] w-full overflow-hidden lg:min-h-[850px]">
+        <AnimatePresence mode="wait">
+          <motion.div
+            key={currentImage}
+            initial={
+              shouldReduceMotion
+                ? { opacity: 0 }
+                : { opacity: 0, scale: 1.06 }
+            }
+            animate={
+              shouldReduceMotion
+                ? { opacity: 1 }
+                : { opacity: 1, scale: 1 }
+            }
+            exit={
+              shouldReduceMotion
+                ? { opacity: 0 }
+                : { opacity: 0, scale: 0.985 }
+            }
+            transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
+            className="absolute inset-0"
+          >
             <Image
-              src={gallery[currentIndex] || vehicle.heroImage}
+              src={currentImage}
               alt={`${vehicle.make} ${vehicle.model}`}
               fill
               priority
-              className="object-cover object-center transition-all duration-500"
+              className="object-cover object-center"
+              sizes="100vw"
             />
-          </div>
+          </motion.div>
+        </AnimatePresence>
 
-          {/* Bottom-Left Carousel Arrows */}
-          {gallery.length > 1 && (
-            <div className="absolute bottom-6 left-8 z-20 flex items-center gap-3">
-              <button
-                onClick={() => setCurrentIndex((prev) => (prev === 0 ? gallery.length - 1 : prev - 1))}
-                className="p-2 border border-white/20 bg-black/20 backdrop-blur-sm rounded-full hover:border-[#9e6d48] text-[#e7e3dc] transition-all"
-                aria-label="Previous Image"
-              >
-                <ArrowLeft className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => setCurrentIndex((prev) => (prev === gallery.length - 1 ? 0 : prev + 1))}
-                className="p-2 border border-white/20 bg-black/20 backdrop-blur-sm rounded-full hover:border-[#9e6d48] text-[#e7e3dc] transition-all"
-                aria-label="Next Image"
-              >
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </div>
-          )}
+        {/* IMAGE GRADING */}
+        <div className="absolute inset-0 bg-gradient-to-r from-[#07110d]/85 via-[#07110d]/30 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-t from-[#07110d] via-transparent to-[#07110d]/30" />
+
+        {/* IMAGE INDEX */}
+        <div className="absolute left-6 top-32 z-20 flex items-center gap-3 text-[9px] tracking-[0.25em] text-white/60 md:left-10 lg:left-16">
+          <span>{String(currentIndex + 1).padStart(2, "0")}</span>
+          <span className="h-px w-8 bg-white/25" />
+          <span>{String(gallery.length).padStart(2, "0")}</span>
         </div>
 
-        {/* Right Side: Sidebar Info */}
-        <div className="lg:col-span-4 bg-[#11231c] p-8 md:p-12 flex flex-col justify-center border-l border-[#1b332a]">
-          <span className="text-xs tracking-[0.3em] text-[#8a9a93] uppercase font-light block mb-2">
-            {vehicle.year}
-          </span>
-
-          <h1 className="font-serif text-3xl md:text-4xl lg:text-5xl uppercase tracking-wider text-[#e7e3dc] font-light leading-tight mb-4">
-            {vehicle.make} <br />
-            <span>{vehicle.model}</span>
-          </h1>
-
-          <div className="w-12 h-[1px] bg-[#9e6d48] mb-6" />
-
-          {/* Price */}
-          <div className="text-3xl font-serif text-[#e7e3dc] mb-8">
-            {typeof vehicle.price === "number"
-              ? `$${(vehicle.price as number).toLocaleString()}`
-              : vehicle.price}
-            <span className="text-xs font-sans text-[#8a9a93] tracking-widest font-light uppercase ml-2">
-              USD
-            </span>
-          </div>
-
-          {/* Spec Badges */}
-          <div className="space-y-4 mb-8 text-[11px] tracking-[0.2em] uppercase font-light text-[#a2b0a9]">
-            {vehicle.powerSpec && (
-              <div className="flex items-center gap-3">
-                <Zap className="w-4 h-4 text-[#8a9a93]" />
-                <span>{vehicle.powerSpec}</span>
+        {/* HERO COPY */}
+        <div className="absolute inset-x-0 bottom-0 z-20 px-6 pb-12 md:px-10 md:pb-16 lg:px-16 lg:pb-20">
+          <div className="grid grid-cols-1 gap-10 lg:grid-cols-12 lg:items-end">
+            <motion.div
+              initial={
+                shouldReduceMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, y: 35 }
+              }
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.15,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="lg:col-span-8"
+            >
+              <div className="mb-5 flex items-center gap-3">
+                <span className="text-[10px] tracking-[0.35em] text-[#bda68f]">
+                  {vehicle.year}
+                </span>
+                <span className="h-px w-8 bg-[#9e6d48]" />
+                <span className="text-[10px] tracking-[0.3em] text-white/60">
+                  {vehicle.trim}
+                </span>
               </div>
-            )}
-            {vehicle.engineSpec && (
-              <div className="flex items-center gap-3">
-                <Gauge className="w-4 h-4 text-[#8a9a93]" />
-                <span>{vehicle.engineSpec}</span>
-              </div>
-            )}
-            <div className="flex items-center gap-3">
-              <Shield className="w-4 h-4 text-[#8a9a93]" />
-              <span>AWD &bull; ALL WHEEL DRIVE</span>
-            </div>
-          </div>
 
-          {/* Call to Actions */}
-          <div className="space-y-4">
-            <button className="w-full py-4 bg-[#b07d58] text-[#0d1c17] text-[10px] tracking-[0.25em] uppercase font-semibold hover:bg-[#e7e3dc] transition-all flex items-center justify-center gap-2">
-              BOOK A VIEWING
-              <Calendar className="w-3.5 h-3.5" />
-            </button>
-            <button className="w-full py-4 border border-[#213830] text-[#8a9a93] hover:text-[#e7e3dc] text-[10px] tracking-[0.25em] uppercase font-light hover:bg-[#182e25] transition-all">
-              SCHEDULE A TEST DRIVE &rarr;
-            </button>
+              <h1 className="max-w-5xl font-serif text-5xl font-light uppercase leading-[0.84] tracking-[-0.035em] text-white sm:text-6xl md:text-8xl lg:text-[112px]">
+                {vehicle.make}
+                <br />
+                <span className="text-[#d8d3cb]">{vehicle.model}</span>
+              </h1>
+            </motion.div>
+
+            <motion.div
+              initial={
+                shouldReduceMotion
+                  ? { opacity: 0 }
+                  : { opacity: 0, y: 25 }
+              }
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.3,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="lg:col-span-4"
+            >
+              <div className="mb-7 grid grid-cols-3 border-y border-white/15 py-5">
+                <div>
+                  <span className="mb-2 block text-[8px] tracking-[0.25em] text-white/45">
+                    POWER
+                  </span>
+                  <span className="font-serif text-lg text-white">
+                    {vehicle.powerSpec}
+                  </span>
+                </div>
+
+                <div className="border-l border-white/15 pl-4">
+                  <span className="mb-2 block text-[8px] tracking-[0.25em] text-white/45">
+                    ENGINE
+                  </span>
+                  <span className="font-serif text-sm text-white">
+                    {vehicle.engineSpec}
+                  </span>
+                </div>
+
+                <div className="border-l border-white/15 pl-4">
+                  <span className="mb-2 block text-[8px] tracking-[0.25em] text-white/45">
+                    DRIVE
+                  </span>
+                  <span className="font-serif text-sm text-white">
+                    {vehicle.specs?.drivetrain || "See specifications"}
+                  </span>
+                </div>
+              </div>
+
+              <div className="flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between">
+                <div>
+                  <span className="mb-1 block text-[8px] tracking-[0.25em] text-white/45">
+                    ASKING PRICE
+                  </span>
+                  <span className="font-serif text-3xl font-light text-white md:text-4xl">
+                    {vehicle.price}
+                  </span>
+                </div>
+
+                <Link
+                  href={`/contact?vehicle=${encodeURIComponent(
+                    `${vehicle.year} ${vehicle.make} ${vehicle.model}`
+                  )}&type=viewing`}
+                  className="inline-flex items-center justify-center gap-3 bg-[#b07d58] px-7 py-4 text-[9px] font-semibold tracking-[0.25em] text-[#0b1712] uppercase transition-all hover:bg-[#e7e3dc]"
+                >
+                  Book a Viewing
+                  <Calendar className="h-3.5 w-3.5" />
+                </Link>
+              </div>
+            </motion.div>
           </div>
         </div>
 
+        {/* GALLERY CONTROLS */}
+        {gallery.length > 1 && (
+          <div className="absolute bottom-8 right-6 z-30 flex items-center gap-2 md:right-10 lg:right-16">
+            <button
+              type="button"
+              onClick={previousImage}
+              className="flex h-11 w-11 items-center justify-center border border-white/20 bg-black/20 backdrop-blur-md transition-all hover:border-[#9e6d48] hover:bg-black/40"
+              aria-label="Previous image"
+            >
+              <ChevronLeft className="h-4 w-4" />
+            </button>
+
+            <button
+              type="button"
+              onClick={nextImage}
+              className="flex h-11 w-11 items-center justify-center border border-white/20 bg-black/20 backdrop-blur-md transition-all hover:border-[#9e6d48] hover:bg-black/40"
+              aria-label="Next image"
+            >
+              <ChevronRight className="h-4 w-4" />
+            </button>
+          </div>
+        )}
       </div>
 
-      {/* Lower Row: Centered Thumbnail Selector Bar */}
-      {gallery.length > 0 && (
-        <div className="bg-[#f4f0eb] py-6 px-8 md:px-12 border-t border-[#dcd5c9]">
-          <div className="flex items-center justify-center gap-4 overflow-x-auto max-w-[1500px] mx-auto pb-2 scrollbar-none">
-            {gallery.map((img, idx) => (
+      {/* THUMBNAILS */}
+      {gallery.length > 1 && (
+        <div className="border-t border-white/10 bg-[#0b1712] px-6 py-5 md:px-10 lg:px-16">
+          <div className="flex items-center gap-3 overflow-x-auto pb-1 scrollbar-none">
+            {gallery.map((image, index) => (
               <button
-                key={idx}
-                onClick={() => setCurrentIndex(idx)}
-                className={`relative flex-shrink-0 w-24 h-16 md:w-32 md:h-20 rounded overflow-hidden transition-all ${
-                  currentIndex === idx
-                    ? "ring-2 ring-[#9e6d48] scale-105 shadow-md"
-                    : "opacity-60 hover:opacity-100"
+                key={`${image}-${index}`}
+                type="button"
+                onClick={() => setCurrentIndex(index)}
+                className={`group relative h-16 w-24 flex-shrink-0 overflow-hidden transition-all md:h-20 md:w-32 ${
+                  currentIndex === index
+                    ? "ring-1 ring-[#b07d58]"
+                    : "opacity-45 hover:opacity-100"
                 }`}
+                aria-label={`View image ${index + 1}`}
               >
                 <Image
-                  src={img}
-                  alt={`Thumbnail ${idx + 1}`}
+                  src={image}
+                  alt=""
                   fill
-                  className="object-cover"
+                  className="object-cover transition-transform duration-700 group-hover:scale-105"
                 />
+
+                {currentIndex === index && (
+                  <span className="absolute inset-x-0 bottom-0 h-0.5 bg-[#b07d58]" />
+                )}
               </button>
             ))}
           </div>
         </div>
       )}
+
+      {/* QUICK ACTION STRIP */}
+      <div className="border-t border-[#1d3028] bg-[#11231c]">
+        <div className="grid grid-cols-1 md:grid-cols-3">
+          <div className="flex items-center gap-4 border-b border-[#1d3028] px-6 py-5 md:border-b-0 md:border-r md:px-10">
+            <Zap className="h-4 w-4 text-[#9e6d48]" />
+            <div>
+              <span className="block text-[8px] tracking-[0.25em] text-white/40">
+                PERFORMANCE
+              </span>
+              <span className="text-xs tracking-wider text-white/80">
+                {vehicle.powerSpec}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 border-b border-[#1d3028] px-6 py-5 md:border-b-0 md:border-r md:px-10">
+            <Gauge className="h-4 w-4 text-[#9e6d48]" />
+            <div>
+              <span className="block text-[8px] tracking-[0.25em] text-white/40">
+                POWERTRAIN
+              </span>
+              <span className="text-xs tracking-wider text-white/80">
+                {vehicle.engineSpec}
+              </span>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-4 px-6 py-5 md:px-10">
+            <Shield className="h-4 w-4 text-[#9e6d48]" />
+            <div>
+              <span className="block text-[8px] tracking-[0.25em] text-white/40">
+                MSYNTRA STANDARD
+              </span>
+              <span className="text-xs tracking-wider text-white/80">
+                Inspected & Verified
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

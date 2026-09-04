@@ -1,73 +1,176 @@
 "use client";
 
-import { Vehicle } from "@/types/vehicle";
-import { CheckCircle2, ShieldCheck, Sparkles } from "lucide-react";
+import type { Vehicle } from "@/types/vehicle";
 
-export default function VehicleFeaturesHistorySection({ vehicle }: { vehicle: Vehicle }) {
+import {
+  ArrowUpRight,
+  Check,
+  CheckCircle2,
+  ShieldCheck,
+} from "lucide-react";
+
+import { motion, useReducedMotion } from "framer-motion";
+
+export default function VehicleFeaturesHistorySection({
+  vehicle,
+}: {
+  vehicle: Vehicle;
+}) {
+  const shouldReduceMotion = useReducedMotion();
+
   const history = vehicle.historyChecklist || [
-    "1 Owner",
+    "Verified Vehicle Identity",
     "Clean Title",
-    "No Accident History",
-    "Regularly Serviced",
-    "All Maintenance Records Available",
+    "No Reported Major Accidents",
+    "Service Records Reviewed",
+    "MSyntra Quality Assurance",
   ];
 
-  const features = vehicle.features || [
-    "M Carbon Exterior Package",
-    "Merino Leather Upholstery",
-    "Bowers & Wilkins Surround Sound",
-    "M Driver's Package",
-    "Head-Up Display",
-    "360° Camera & Parking Assist",
-  ];
+  const features = vehicle.features || [];
 
   return (
-    <section className="px-8 md:px-16 lg:px-24 py-20 max-w-[1500px] mx-auto border-b border-[#dcd5c9]">
-      <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16">
-        
-        {/* Features Grid */}
-        <div className="lg:col-span-7">
-          <span className="text-[10px] tracking-[0.3em] text-[#9e6d48] uppercase font-semibold block mb-6">
-            FEATURES
-          </span>
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {features.map((feature, idx) => (
-              <div
-                key={idx}
-                className="p-4 bg-[#eae5dd] border border-[#dcd5c9] rounded-xl flex items-center gap-3"
-              >
-                <Sparkles className="w-4 h-4 text-[#9e6d48] flex-shrink-0" />
-                <span className="text-xs font-medium text-[#0d1c17]">{feature}</span>
-              </div>
-            ))}
+    <section className="relative overflow-hidden bg-[#e5ded1] px-6 py-24 md:px-10 md:py-32 lg:px-16">
+      <div className="mx-auto max-w-[1500px]">
+        {/* HEADER */}
+        <div className="mb-16 grid grid-cols-1 gap-8 lg:grid-cols-12 lg:items-end">
+          <div className="lg:col-span-7">
+            <div className="mb-6 flex items-center gap-3">
+              <span className="text-[9px] font-semibold tracking-[0.35em] text-[#9e6d48]">
+                02 / THE DETAILS
+              </span>
+              <span className="h-px w-10 bg-[#9e6d48]" />
+            </div>
+
+            <h2 className="max-w-4xl font-serif text-4xl font-light leading-[0.95] tracking-[-0.025em] text-[#0d1c17] md:text-6xl">
+              Nothing unnecessary.
+              <br />
+              <span className="text-[#6f706a]">Nothing overlooked.</span>
+            </h2>
           </div>
+
+          <p className="max-w-md text-sm font-light leading-7 text-[#5d6863] lg:col-span-5 lg:justify-self-end">
+            Every vehicle entering the MSyntra collection is considered for
+            specification, condition, provenance and overall suitability.
+          </p>
         </div>
 
-        {/* History Checklist Box */}
-        <div className="lg:col-span-5 bg-[#eae5dd] p-8 rounded-xl border border-[#dcd5c9] flex flex-col justify-between">
-          <div>
-            <span className="text-[10px] tracking-[0.3em] text-[#5d6863] uppercase font-semibold block mb-6">
-              VEHICLE HISTORY
-            </span>
+        <div className="grid grid-cols-1 gap-16 lg:grid-cols-12 lg:gap-20">
+          {/* FEATURES */}
+          <div className="lg:col-span-7">
+            <div className="mb-7 flex items-center justify-between border-b border-[#cfc7ba] pb-5">
+              <span className="text-[9px] font-semibold tracking-[0.3em] text-[#0d1c17]">
+                SELECTED EQUIPMENT
+              </span>
 
-            <ul className="space-y-4">
-              {history.map((item, idx) => (
-                <li key={idx} className="flex items-center gap-3 text-xs text-[#0d1c17] font-medium">
-                  <CheckCircle2 className="w-4 h-4 text-[#9e6d48] flex-shrink-0" />
-                  <span>{item}</span>
-                </li>
+              <span className="text-[9px] tracking-[0.2em] text-[#6f706a]">
+                {String(features.length).padStart(2, "0")} ITEMS
+              </span>
+            </div>
+
+            <div>
+              {features.map((feature, index) => (
+                <motion.div
+                  key={feature}
+                  initial={
+                    shouldReduceMotion
+                      ? { opacity: 0 }
+                      : { opacity: 0, x: -20 }
+                  }
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true, amount: 0.2 }}
+                  transition={{
+                    duration: 0.55,
+                    delay: index * 0.05,
+                  }}
+                  className="group flex items-center justify-between border-b border-[#cfc7ba] py-6"
+                >
+                  <div className="flex items-center gap-5">
+                    <span className="font-mono text-[9px] tracking-wider text-[#9e6d48]">
+                      {String(index + 1).padStart(2, "0")}
+                    </span>
+
+                    <span className="max-w-xl text-sm font-light text-[#0d1c17] transition-transform duration-500 group-hover:translate-x-1">
+                      {feature}
+                    </span>
+                  </div>
+
+                  <ArrowUpRight className="h-4 w-4 text-[#9e6d48] opacity-0 transition-all duration-500 group-hover:translate-x-1 group-hover:-translate-y-1 group-hover:opacity-100" />
+                </motion.div>
               ))}
-            </ul>
+            </div>
           </div>
 
-          <div className="mt-8 pt-6 border-t border-[#dcd5c9] flex items-center gap-3">
-            <ShieldCheck className="w-8 h-8 text-[#9e6d48] flex-shrink-0" />
-            <p className="text-[10px] text-[#5d6863] uppercase tracking-wider">
-              Verified by MSYNTRA Quality Assurance
-            </p>
-          </div>
+          {/* HISTORY */}
+          <motion.div
+            initial={
+              shouldReduceMotion
+                ? { opacity: 0 }
+                : { opacity: 0, y: 30 }
+            }
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, amount: 0.25 }}
+            transition={{ duration: 0.8 }}
+            className="relative overflow-hidden bg-[#17251f] p-8 text-[#e7e3dc] md:p-10 lg:col-span-5"
+          >
+            <div className="absolute right-0 top-0 h-40 w-40 rounded-full bg-[#274238]/40 blur-3xl" />
+
+            <div className="relative z-10">
+              <div className="mb-12 flex items-start justify-between">
+                <div>
+                  <span className="mb-3 block text-[9px] font-semibold tracking-[0.3em] text-[#9e6d48]">
+                    PROVENANCE
+                  </span>
+
+                  <h3 className="font-serif text-3xl font-light">
+                    Vehicle history
+                  </h3>
+                </div>
+
+                <ShieldCheck className="h-6 w-6 text-[#9e6d48]" />
+              </div>
+
+              <div className="space-y-6">
+                {history.map((item, index) => (
+                  <div
+                    key={item}
+                    className="flex items-start gap-4 border-b border-white/10 pb-5 last:border-0"
+                  >
+                    <div className="mt-0.5 flex h-5 w-5 flex-shrink-0 items-center justify-center rounded-full border border-[#9e6d48]/50">
+                      <Check className="h-2.5 w-2.5 text-[#b07d58]" />
+                    </div>
+
+                    <div>
+                      <span className="mb-1 block text-[8px] tracking-[0.25em] text-white/35">
+                        {String(index + 1).padStart(2, "0")}
+                      </span>
+
+                      <span className="text-xs font-light tracking-wide text-white/80">
+                        {item}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="mt-10 border-t border-white/10 pt-7">
+                <div className="flex items-start gap-4">
+                  <CheckCircle2 className="mt-0.5 h-5 w-5 flex-shrink-0 text-[#9e6d48]" />
+
+                  <div>
+                    <span className="mb-1 block text-[9px] font-semibold tracking-[0.25em] text-white/75">
+                      MSYNTRA QUALITY ASSURANCE
+                    </span>
+
+                    <p className="text-[10px] leading-6 text-white/40">
+                      Vehicle information and condition are reviewed as part
+                      of our collection process.
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </motion.div>
         </div>
-
       </div>
     </section>
   );

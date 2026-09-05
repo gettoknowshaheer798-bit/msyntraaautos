@@ -10,7 +10,7 @@ interface NavbarProps {
 }
 
 const menuItems = [
-  { name: "MODELS", href: "/catalog" },
+  { name: "MODELS", href: "/inventory" },
   { name: "TECHNOLOGY", href: "/about" },
   { name: "FINANCING", href: "/financing" },
   { name: "EXPERIENCE", href: "/experience" },

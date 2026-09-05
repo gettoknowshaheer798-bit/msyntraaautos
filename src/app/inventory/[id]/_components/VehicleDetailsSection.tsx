@@ -1,6 +1,7 @@
 "use client";
 
 import type { Vehicle } from "@/types/vehicle";
+
 import {
   motion,
   useReducedMotion,
@@ -8,6 +9,7 @@ import {
   useTransform,
   type Variants,
 } from "framer-motion";
+
 import Image from "next/image";
 import { useRef } from "react";
 
@@ -15,9 +17,17 @@ interface Props {
   vehicle: Vehicle;
 }
 
-export default function VehicleDetailsSection({ vehicle }: Props) {
+export default function VehicleDetailsSection({
+  vehicle,
+}: Props) {
   const shouldReduceMotion = useReducedMotion();
 
+  /*
+   * Build a unique image collection from the vehicle.
+   *
+   * The gallery itself only uses galleryImages.
+   * Hero/action/thumbnail are used as fallbacks elsewhere.
+   */
   const gallery = Array.from(
     new Set(
       [
@@ -29,12 +39,24 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
     )
   );
 
-  const cinematicImage = gallery[1] ?? gallery[0];
-  const detailImage = gallery[2] ?? gallery[0];
+  const cinematicImage =
+    gallery[1] ?? gallery[0] ?? vehicle.heroImage;
 
-  const imageRef = useRef<HTMLDivElement>(null);
+  const detailImage =
+    gallery[2] ?? gallery[0] ?? vehicle.heroImage;
 
-  const { scrollYProgress } = useScroll({
+  const galleryImages = Array.from(
+    new Set(
+      (vehicle.galleryImages ?? []).filter(Boolean)
+    )
+  );
+
+  const imageRef =
+    useRef<HTMLDivElement>(null);
+
+  const {
+    scrollYProgress,
+  } = useScroll({
     target: imageRef,
     offset: ["start end", "end start"],
   });
@@ -42,7 +64,9 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
   const imageY = useTransform(
     scrollYProgress,
     [0, 1],
-    shouldReduceMotion ? ["0%", "0%"] : ["-8%", "8%"]
+    shouldReduceMotion
+      ? ["0%", "0%"]
+      : ["-8%", "8%"]
   );
 
   const reveal: Variants = {
@@ -50,9 +74,11 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
       opacity: 0,
       y: shouldReduceMotion ? 0 : 30,
     },
+
     visible: {
       opacity: 1,
       y: 0,
+
       transition: {
         duration: 0.8,
         ease: "easeOut",
@@ -64,16 +90,19 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
 
   return (
     <section className="bg-[#f4f0eb] text-[#102019]">
-      {/* =========================
+      {/* =====================================================
           01 / THE MACHINE
-      ========================== */}
+      ====================================================== */}
 
       <div className="mx-auto max-w-[1600px] px-5 py-24 sm:px-8 lg:px-12 lg:py-36">
         <motion.div
           variants={reveal}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
           className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]"
         >
           <div>
@@ -86,7 +115,9 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
             <h2 className="max-w-4xl text-5xl font-light leading-[0.94] tracking-[-0.055em] sm:text-6xl lg:text-8xl">
               Built for the
               <br />
-              <span className="text-[#77766f]">way forward.</span>
+              <span className="text-[#77766f]">
+                way forward.
+              </span>
             </h2>
 
             <p className="mt-10 max-w-2xl text-base leading-8 text-[#62645f] sm:text-lg">
@@ -101,7 +132,10 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
           variants={reveal}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
           className="mt-28 border-y border-[#102019]/15 py-10 lg:mt-40 lg:py-14"
         >
           <div className="grid gap-10 lg:grid-cols-3 lg:items-end">
@@ -111,7 +145,10 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
               </p>
 
               <p className="mt-3 text-7xl font-light tracking-[-0.07em] sm:text-8xl">
-                {vehicle.powerSpec.replace(/\D/g, "")}
+                {vehicle.powerSpec.replace(
+                  /\D/g,
+                  ""
+                )}
               </p>
 
               <p className="mt-1 text-xs tracking-[0.22em] text-[#77766f]">
@@ -135,23 +172,26 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
               </p>
 
               <p className="mt-4 text-xl font-light sm:text-2xl">
-                {specs?.drivetrain ?? "See specifications"}
+                {specs?.drivetrain ??
+                  "See specifications"}
               </p>
             </div>
           </div>
         </motion.div>
       </div>
 
-      {/* =========================
+      {/* =====================================================
           CINEMATIC IMAGE
-      ========================== */}
+      ====================================================== */}
 
       <div
         ref={imageRef}
         className="relative h-[65vh] min-h-[500px] overflow-hidden bg-[#102019] sm:h-[75vh]"
       >
         <motion.div
-          style={{ y: imageY }}
+          style={{
+            y: imageY,
+          }}
           className="absolute inset-x-0 -top-[8%] h-[116%]"
         >
           <Image
@@ -179,16 +219,19 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
         </div>
       </div>
 
-      {/* =========================
+      {/* =====================================================
           TECHNICAL DATA
-      ========================== */}
+      ====================================================== */}
 
       <div className="mx-auto max-w-[1600px] px-5 py-24 sm:px-8 lg:px-12 lg:py-36">
         <motion.div
           variants={reveal}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
+          viewport={{
+            once: true,
+            amount: 0.2,
+          }}
           className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]"
         >
           <div>
@@ -205,43 +248,214 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
 
           <div className="border-t border-[#102019]/15">
             {[
-              ["ENGINE", specs?.engine ?? vehicle.engineSpec],
-              ["POWER", specs?.power ?? vehicle.powerSpec],
-              ["TORQUE", specs?.torque ?? "See specifications"],
-              ["DRIVETRAIN", specs?.drivetrain ?? "See specifications"],
+              [
+                "ENGINE",
+                specs?.engine ??
+                  vehicle.engineSpec,
+              ],
+              [
+                "POWER",
+                specs?.power ??
+                  vehicle.powerSpec,
+              ],
+              [
+                "TORQUE",
+                specs?.torque ??
+                  "See specifications",
+              ],
+              [
+                "DRIVETRAIN",
+                specs?.drivetrain ??
+                  "See specifications",
+              ],
               [
                 "TRANSMISSION",
-                specs?.transmission ?? "See specifications",
+                specs?.transmission ??
+                  "See specifications",
               ],
-              ["FUEL / ENERGY", specs?.fuelType ?? "See specifications"],
-            ].map(([label, value], index) => (
-              <div
-                key={label}
-                className={`grid grid-cols-[0.7fr_1.3fr] gap-6 py-6 ${
-                  index !== 5 ? "border-b border-[#102019]/15" : ""
-                }`}
-              >
-                <p className="text-[10px] tracking-[0.22em] text-[#77766f]">
-                  {label}
-                </p>
+              [
+                "FUEL / ENERGY",
+                specs?.fuelType ??
+                  "See specifications",
+              ],
+            ].map(
+              ([label, value], index) => (
+                <div
+                  key={label}
+                  className={`grid grid-cols-[0.7fr_1.3fr] gap-6 py-6 ${
+                    index !== 5
+                      ? "border-b border-[#102019]/15"
+                      : ""
+                  }`}
+                >
+                  <p className="text-[10px] tracking-[0.22em] text-[#77766f]">
+                    {label}
+                  </p>
 
-                <p className="text-sm font-medium sm:text-base">
-                  {value}
-                </p>
-              </div>
-            ))}
+                  <p className="text-sm font-medium sm:text-base">
+                    {value}
+                  </p>
+                </div>
+              )
+            )}
           </div>
         </motion.div>
 
-        {/* =========================
+        {/* =================================================
+            VEHICLE GALLERY
+        ================================================== */}
+
+        {galleryImages.length > 0 && (
+          <section className="mt-28 lg:mt-40">
+            <motion.div
+              variants={reveal}
+              initial="hidden"
+              whileInView="visible"
+              viewport={{
+                once: true,
+                amount: 0.15,
+              }}
+              className="border-t border-[#102019]/15 pt-8"
+            >
+              <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
+                <div>
+                  <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+                    VEHICLE GALLERY
+                  </p>
+
+                  <h3 className="mt-5 text-4xl font-light leading-[0.95] tracking-[-0.045em] sm:text-5xl lg:text-6xl">
+                    A closer
+                    <br />
+                    look.
+                  </h3>
+                </div>
+
+                <div className="flex items-end justify-between">
+                  <p className="max-w-md text-sm leading-7 text-[#62645f] sm:text-base">
+                    Explore the details, proportions
+                    and finish of this vehicle from
+                    every angle.
+                  </p>
+
+                  <span className="hidden text-[10px] tracking-[0.2em] text-[#77766f] sm:block">
+                    {galleryImages.length
+                      .toString()
+                      .padStart(2, "0")}{" "}
+                    IMAGES
+                  </span>
+                </div>
+              </div>
+            </motion.div>
+
+            {/* FIRST / FEATURED GALLERY IMAGE */}
+
+            <motion.div
+              initial={{
+                opacity: 0,
+                y: shouldReduceMotion
+                  ? 0
+                  : 30,
+              }}
+              whileInView={{
+                opacity: 1,
+                y: 0,
+              }}
+              viewport={{
+                once: true,
+                amount: 0.12,
+              }}
+              transition={{
+                duration: 0.9,
+                ease: "easeOut",
+              }}
+              className="relative mt-12 aspect-[16/9] overflow-hidden bg-[#ddd7cd] lg:mt-16"
+            >
+              <Image
+                src={galleryImages[0]}
+                alt={`${vehicle.make} ${vehicle.model} gallery 01`}
+                fill
+                sizes="100vw"
+                className="object-cover transition-transform duration-[1400ms] hover:scale-[1.02]"
+              />
+
+              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0d1915]/45 to-transparent" />
+
+              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 lg:bottom-10 lg:left-10">
+                <p className="text-[10px] tracking-[0.2em] text-white/60">
+                  MS / 01
+                </p>
+              </div>
+            </motion.div>
+
+            {/* REMAINING GALLERY IMAGES */}
+
+            {galleryImages.length > 1 && (
+              <div className="mt-6 grid gap-6 sm:grid-cols-2">
+                {galleryImages
+                  .slice(1)
+                  .map((image, index) => (
+                    <motion.div
+                      key={`${image}-${index}`}
+                      initial={{
+                        opacity: 0,
+                        y: shouldReduceMotion
+                          ? 0
+                          : 25,
+                      }}
+                      whileInView={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      viewport={{
+                        once: true,
+                        amount: 0.1,
+                      }}
+                      transition={{
+                        duration: 0.8,
+                        delay:
+                          (index % 2) * 0.08,
+                        ease: "easeOut",
+                      }}
+                      className="group relative aspect-[4/3] overflow-hidden bg-[#ddd7cd]"
+                    >
+                      <Image
+                        src={image}
+                        alt={`${vehicle.make} ${vehicle.model} gallery ${
+                          index + 2
+                        }`}
+                        fill
+                        sizes="(max-width: 640px) 100vw, 50vw"
+                        className="object-cover transition-transform duration-[1200ms] group-hover:scale-[1.025]"
+                      />
+
+                      <div className="absolute inset-0 bg-gradient-to-t from-[#0d1915]/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+
+                      <div className="absolute bottom-5 left-5">
+                        <span className="text-[10px] tracking-[0.2em] text-white/0 transition-colors duration-500 group-hover:text-white/60">
+                          MS /{" "}
+                          {(index + 2)
+                            .toString()
+                            .padStart(2, "0")}
+                        </span>
+                      </div>
+                    </motion.div>
+                  ))}
+              </div>
+            )}
+          </section>
+        )}
+
+        {/* =================================================
             SECOND IMAGE
-        ========================== */}
+        ================================================== */}
 
         <div className="mt-28 grid gap-6 lg:mt-40 lg:grid-cols-[1.35fr_0.65fr]">
           <motion.div
             initial={{
               opacity: 0,
-              y: shouldReduceMotion ? 0 : 25,
+              y: shouldReduceMotion
+                ? 0
+                : 25,
             }}
             whileInView={{
               opacity: 1,
@@ -269,7 +483,9 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
           <motion.div
             initial={{
               opacity: 0,
-              y: shouldReduceMotion ? 0 : 25,
+              y: shouldReduceMotion
+                ? 0
+                : 25,
             }}
             whileInView={{
               opacity: 1,
@@ -297,8 +513,9 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
             </h3>
 
             <p className="mt-6 max-w-sm text-sm leading-6 text-white/55">
-              Performance is only one part of the equation. The details are
-              what make the experience complete.
+              Performance is only one part of
+              the equation. The details are what
+              make the experience complete.
             </p>
           </motion.div>
         </div>

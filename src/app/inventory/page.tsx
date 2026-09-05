@@ -13,12 +13,23 @@ import {
 } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
-import { vehicles } from "@/data/vehicles";
+import { createClient } from "@/utils/supabase/client";
+import type { Vehicle } from "@/types/vehicle";
 
-type Category = "ALL" | "PERFORMANCE" | "LUXURY" | "SUV" | "ELECTRIC";
-type SortOption = "FEATURED" | "PRICE_LOW" | "PRICE_HIGH" | "YEAR_NEW";
+type Category =
+  | "ALL"
+  | "PERFORMANCE"
+  | "LUXURY"
+  | "SUV"
+  | "ELECTRIC";
+
+type SortOption =
+  | "FEATURED"
+  | "PRICE_LOW"
+  | "PRICE_HIGH"
+  | "YEAR_NEW";
 
 const CATEGORIES: Category[] = [
   "ALL",
@@ -28,14 +39,68 @@ const CATEGORIES: Category[] = [
   "ELECTRIC",
 ];
 
-const SORT_OPTIONS: { value: SortOption; label: string }[] = [
-  { value: "FEATURED", label: "Featured" },
-  { value: "PRICE_LOW", label: "Price: Low to High" },
-  { value: "PRICE_HIGH", label: "Price: High to Low" },
-  { value: "YEAR_NEW", label: "Newest First" },
+const SORT_OPTIONS: {
+  value: SortOption;
+  label: string;
+}[] = [
+  {
+    value: "FEATURED",
+    label: "Featured",
+  },
+  {
+    value: "PRICE_LOW",
+    label: "Price: Low to High",
+  },
+  {
+    value: "PRICE_HIGH",
+    label: "Price: High to Low",
+  },
+  {
+    value: "YEAR_NEW",
+    label: "Newest First",
+  },
 ];
 
-function getCategory(make: string, model: string): Category {
+type SupabaseVehicle = {
+  id: string;
+
+  make: string;
+  model: string;
+  year: number;
+  trim: string;
+
+  description: string;
+
+  hero_image: string;
+  thumbnail: string;
+  action_image: string;
+  image_style: string;
+
+  engine_spec: string;
+  power_spec: string;
+
+  colors: Vehicle["colors"];
+  features: string[];
+
+  specs: Vehicle["specs"];
+  history_checklist: string[];
+
+  financing_estimate: Vehicle["financingEstimate"];
+
+  price: string;
+
+  category: string | null;
+  status: string;
+  featured: boolean;
+
+  created_at?: string;
+  updated_at?: string;
+};
+
+function getCategory(
+  make: string,
+  model: string
+): Category {
   const name = `${make} ${model}`.toLowerCase();
 
   if (name.includes("nevera")) {
@@ -73,34 +138,169 @@ function formatPrice(price: string | number) {
   return price;
 }
 
+function mapSupabaseVehicle(
+  vehicle: SupabaseVehicle
+): Vehicle {
+  return {
+    id: vehicle.id,
+
+    make: vehicle.make,
+    model: vehicle.model,
+    year: vehicle.year,
+    trim: vehicle.trim,
+
+    price: vehicle.price,
+    description: vehicle.description,
+
+    heroImage: vehicle.hero_image,
+    thumbnail: vehicle.thumbnail,
+    actionImage: vehicle.action_image,
+    imageStyle: vehicle.image_style,
+
+    engineSpec: vehicle.engine_spec,
+    powerSpec: vehicle.power_spec,
+
+    colors: vehicle.colors ?? [],
+    features: vehicle.features ?? [],
+
+    specs: vehicle.specs ?? undefined,
+    historyChecklist:
+      vehicle.history_checklist ?? undefined,
+
+    financingEstimate:
+      vehicle.financing_estimate ?? undefined,
+  };
+}
+
 export default function InventoryPage() {
   const shouldReduceMotion = useReducedMotion();
+
+  const [vehicles, setVehicles] = useState<Vehicle[]>(
+    []
+  );
+
+  const [featuredVehicles, setFeaturedVehicles] =
+    useState<string[]>([]);
+
+  const [loading, setLoading] = useState(true);
+
+  const [error, setError] = useState<string | null>(
+    null
+  );
 
   const [activeCategory, setActiveCategory] =
     useState<Category>("ALL");
 
-  const [activeMake, setActiveMake] = useState("ALL");
+  const [activeMake, setActiveMake] =
+    useState("ALL");
 
   const [sortBy, setSortBy] =
     useState<SortOption>("FEATURED");
 
-  const [favorites, setFavorites] = useState<string[]>([]);
+  const [favorites, setFavorites] = useState<string[]>(
+    []
+  );
 
-  const [mobileFiltersOpen, setMobileFiltersOpen] = useState(false);
+  const [mobileFiltersOpen, setMobileFiltersOpen] =
+    useState(false);
 
-  const [sortOpen, setSortOpen] = useState(false);
+  const [sortOpen, setSortOpen] =
+    useState(false);
 
-  const [showFavoritesOnly, setShowFavoritesOnly] = useState(false);
+  const [showFavoritesOnly, setShowFavoritesOnly] =
+    useState(false);
+
+  /*
+   * ============================================================
+   * LOAD VEHICLES FROM SUPABASE
+   * ============================================================
+   */
+
+  useEffect(() => {
+    let mounted = true;
+
+    async function loadVehicles() {
+      setLoading(true);
+      setError(null);
+
+      const supabase = createClient();
+
+      const { data, error } = await supabase
+        .from("vehicles")
+        .select("*")
+        .eq("status", "available")
+        .order("created_at", {
+          ascending: false,
+        });
+
+      if (!mounted) {
+        return;
+      }
+
+      if (error) {
+        console.error(
+          "Failed to load vehicles:",
+          error
+        );
+
+        setError(
+          "Unable to load the current collection."
+        );
+
+        setVehicles([]);
+        setFeaturedVehicles([]);
+        setLoading(false);
+
+        return;
+      }
+
+      const rows = (data ?? []) as SupabaseVehicle[];
+
+      const mappedVehicles =
+        rows.map(mapSupabaseVehicle);
+
+      const featuredIds = rows
+        .filter((vehicle) => vehicle.featured)
+        .map((vehicle) => vehicle.id);
+
+      setVehicles(mappedVehicles);
+      setFeaturedVehicles(featuredIds);
+      setLoading(false);
+    }
+
+    loadVehicles();
+
+    return () => {
+      mounted = false;
+    };
+  }, []);
+
+  /*
+   * ============================================================
+   * MAKES
+   * ============================================================
+   */
 
   const makes = useMemo(() => {
     return Array.from(
-      new Set(vehicles.map((vehicle) => vehicle.make))
+      new Set(
+        vehicles.map((vehicle) => vehicle.make)
+      )
     ).sort();
-  }, []);
+  }, [vehicles]);
+
+  /*
+   * ============================================================
+   * FILTER + SORT
+   * ============================================================
+   */
 
   const filteredVehicles = useMemo(() => {
     const result = vehicles.filter((vehicle) => {
-      const category = getCategory(vehicle.make, vehicle.model);
+      const category = getCategory(
+        vehicle.make,
+        vehicle.model
+      );
 
       const categoryMatch =
         activeCategory === "ALL" ||
@@ -114,32 +314,69 @@ export default function InventoryPage() {
         !showFavoritesOnly ||
         favorites.includes(vehicle.id);
 
-      return categoryMatch && makeMatch && favoriteMatch;
+      return (
+        categoryMatch &&
+        makeMatch &&
+        favoriteMatch
+      );
     });
 
     return [...result].sort((a, b) => {
       switch (sortBy) {
         case "PRICE_LOW":
-          return parsePrice(a.price) - parsePrice(b.price);
+          return (
+            parsePrice(a.price) -
+            parsePrice(b.price)
+          );
 
         case "PRICE_HIGH":
-          return parsePrice(b.price) - parsePrice(a.price);
+          return (
+            parsePrice(b.price) -
+            parsePrice(a.price)
+          );
 
         case "YEAR_NEW":
           return b.year - a.year;
 
-        case "FEATURED":
+        case "FEATURED": {
+          const aFeatured = featuredVehicles.includes(
+            a.id
+          );
+
+          const bFeatured = featuredVehicles.includes(
+            b.id
+          );
+
+          if (aFeatured && !bFeatured) {
+            return -1;
+          }
+
+          if (!aFeatured && bFeatured) {
+            return 1;
+          }
+
+          return 0;
+        }
+
         default:
           return 0;
       }
     });
   }, [
+    vehicles,
+    featuredVehicles,
     activeCategory,
     activeMake,
     favorites,
     showFavoritesOnly,
     sortBy,
   ]);
+
+  /*
+   * ============================================================
+   * FILTER STATE
+   * ============================================================
+   */
 
   const hasActiveFilters =
     activeCategory !== "ALL" ||
@@ -157,10 +394,18 @@ export default function InventoryPage() {
   const toggleFavorite = (id: string) => {
     setFavorites((current) =>
       current.includes(id)
-        ? current.filter((item) => item !== id)
+        ? current.filter(
+            (item) => item !== id
+          )
         : [...current, id]
     );
   };
+
+  /*
+   * ============================================================
+   * RENDER
+   * ============================================================
+   */
 
   return (
     <main className="min-h-screen bg-[#f4f0eb] text-[#0d1c17] selection:bg-[#9e6d48] selection:text-white">
@@ -187,7 +432,10 @@ export default function InventoryPage() {
         {/* Header */}
 
         <header className="relative z-20 mx-auto flex w-full max-w-[1500px] items-center justify-between px-5 py-7 sm:px-8 md:px-12 md:py-8 lg:px-16 xl:px-20">
-          <Link href="/" className="group flex flex-col">
+          <Link
+            href="/"
+            className="group flex flex-col"
+          >
             <span className="font-serif text-lg font-light uppercase tracking-[0.22em] text-[#0d1c17] sm:text-xl">
               MSYNTRA
             </span>
@@ -249,11 +497,19 @@ export default function InventoryPage() {
             initial={
               shouldReduceMotion
                 ? { opacity: 1 }
-                : { opacity: 0, y: 35 }
+                : {
+                    opacity: 0,
+                    y: 35,
+                  }
             }
-            animate={{ opacity: 1, y: 0 }}
+            animate={{
+              opacity: 1,
+              y: 0,
+            }}
             transition={{
-              duration: shouldReduceMotion ? 0 : 1,
+              duration: shouldReduceMotion
+                ? 0
+                : 1,
               ease: [0.16, 1, 0.3, 1],
             }}
             className="max-w-[650px]"
@@ -269,7 +525,8 @@ export default function InventoryPage() {
             <h1
               className="font-serif text-[52px] font-light uppercase leading-[0.86] tracking-[-0.035em] text-[#0d1c17] sm:text-6xl md:text-7xl lg:text-[92px]"
               style={{
-                fontVariationSettings: '"SOFT" 100, "opsz" 144',
+                fontVariationSettings:
+                  '"SOFT" 100, "opsz" 144',
               }}
             >
               EVERY
@@ -281,13 +538,15 @@ export default function InventoryPage() {
 
             <div className="mt-7 flex flex-col gap-6 sm:flex-row sm:items-end sm:gap-10">
               <p className="max-w-[300px] text-xs font-light leading-[1.7] tracking-wide text-[#5d6863] md:text-sm">
-                A considered collection of exceptional automobiles,
-                from everyday capability to uncompromising performance.
+                A considered collection of
+                exceptional automobiles, from
+                everyday capability to
+                uncompromising performance.
               </p>
 
               <div className="border-l border-[#9e6d48]/40 pl-5">
                 <span className="block text-2xl font-light text-[#0d1c17] sm:text-3xl">
-                  {vehicles.length}
+                  {loading ? "—" : vehicles.length}
                 </span>
 
                 <span className="text-[8px] font-semibold uppercase tracking-[0.25em] text-[#5d6863]">
@@ -318,13 +577,16 @@ export default function InventoryPage() {
           <div className="hidden min-h-[76px] items-center justify-between lg:flex">
             <div className="flex items-center gap-8">
               {CATEGORIES.map((category) => {
-                const active = activeCategory === category;
+                const active =
+                  activeCategory === category;
 
                 return (
                   <button
                     key={category}
                     type="button"
-                    onClick={() => setActiveCategory(category)}
+                    onClick={() =>
+                      setActiveCategory(category)
+                    }
                     className={`relative py-7 text-[9px] font-semibold uppercase tracking-[0.25em] transition-colors ${
                       active
                         ? "text-[#0d1c17]"
@@ -335,7 +597,9 @@ export default function InventoryPage() {
 
                     <span
                       className={`absolute bottom-0 left-0 h-[2px] bg-[#9e6d48] transition-all duration-300 ${
-                        active ? "w-full" : "w-0"
+                        active
+                          ? "w-full"
+                          : "w-0"
                       }`}
                     />
                   </button>
@@ -350,15 +614,22 @@ export default function InventoryPage() {
                 <select
                   value={activeMake}
                   onChange={(event) =>
-                    setActiveMake(event.target.value)
+                    setActiveMake(
+                      event.target.value
+                    )
                   }
                   className="cursor-pointer appearance-none bg-transparent py-3 pr-7 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#5d6863] outline-none transition-colors hover:text-[#0d1c17]"
                   aria-label="Filter by make"
                 >
-                  <option value="ALL">ALL MAKES</option>
+                  <option value="ALL">
+                    ALL MAKES
+                  </option>
 
                   {makes.map((make) => (
-                    <option key={make} value={make}>
+                    <option
+                      key={make}
+                      value={make}
+                    >
                       {make}
                     </option>
                   ))}
@@ -374,7 +645,9 @@ export default function InventoryPage() {
               <button
                 type="button"
                 onClick={() =>
-                  setShowFavoritesOnly((current) => !current)
+                  setShowFavoritesOnly(
+                    (current) => !current
+                  )
                 }
                 className={`flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.2em] transition-colors ${
                   showFavoritesOnly
@@ -384,7 +657,9 @@ export default function InventoryPage() {
               >
                 <Heart
                   className={`h-3.5 w-3.5 ${
-                    showFavoritesOnly ? "fill-[#9e6d48]" : ""
+                    showFavoritesOnly
+                      ? "fill-[#9e6d48]"
+                      : ""
                   }`}
                 />
 
@@ -404,21 +679,29 @@ export default function InventoryPage() {
               <div className="relative">
                 <button
                   type="button"
-                  onClick={() => setSortOpen((current) => !current)}
+                  onClick={() =>
+                    setSortOpen(
+                      (current) => !current
+                    )
+                  }
                   className="flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#5d6863] transition-colors hover:text-[#0d1c17]"
                   aria-expanded={sortOpen}
                 >
                   <span>
                     {
                       SORT_OPTIONS.find(
-                        (option) => option.value === sortBy
+                        (option) =>
+                          option.value ===
+                          sortBy
                       )?.label
                     }
                   </span>
 
                   <ChevronDown
                     className={`h-3 w-3 text-[#9e6d48] transition-transform ${
-                      sortOpen ? "rotate-180" : ""
+                      sortOpen
+                        ? "rotate-180"
+                        : ""
                     }`}
                   />
                 </button>
@@ -426,29 +709,47 @@ export default function InventoryPage() {
                 <AnimatePresence>
                   {sortOpen && (
                     <motion.div
-                      initial={{ opacity: 0, y: 8 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 8 }}
-                      transition={{ duration: 0.2 }}
+                      initial={{
+                        opacity: 0,
+                        y: 8,
+                      }}
+                      animate={{
+                        opacity: 1,
+                        y: 0,
+                      }}
+                      exit={{
+                        opacity: 0,
+                        y: 8,
+                      }}
+                      transition={{
+                        duration: 0.2,
+                      }}
                       className="absolute right-0 top-full mt-3 w-52 border border-[#d6d0c6] bg-[#f4f0eb] p-2 shadow-xl"
                     >
-                      {SORT_OPTIONS.map((option) => (
-                        <button
-                          key={option.value}
-                          type="button"
-                          onClick={() => {
-                            setSortBy(option.value);
-                            setSortOpen(false);
-                          }}
-                          className="flex w-full items-center justify-between px-3 py-3 text-left text-[8px] font-semibold uppercase tracking-[0.18em] text-[#5d6863] transition-colors hover:bg-[#eae5dd] hover:text-[#0d1c17]"
-                        >
-                          {option.label}
+                      {SORT_OPTIONS.map(
+                        (option) => (
+                          <button
+                            key={
+                              option.value
+                            }
+                            type="button"
+                            onClick={() => {
+                              setSortBy(
+                                option.value
+                              );
+                              setSortOpen(false);
+                            }}
+                            className="flex w-full items-center justify-between px-3 py-3 text-left text-[8px] font-semibold uppercase tracking-[0.18em] text-[#5d6863] transition-colors hover:bg-[#eae5dd] hover:text-[#0d1c17]"
+                          >
+                            {option.label}
 
-                          {sortBy === option.value && (
-                            <Check className="h-3 w-3 text-[#9e6d48]" />
-                          )}
-                        </button>
-                      ))}
+                            {sortBy ===
+                              option.value && (
+                              <Check className="h-3 w-3 text-[#9e6d48]" />
+                            )}
+                          </button>
+                        )
+                      )}
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -477,7 +778,9 @@ export default function InventoryPage() {
             <div className="flex items-center gap-3">
               <button
                 type="button"
-                onClick={() => setMobileFiltersOpen(true)}
+                onClick={() =>
+                  setMobileFiltersOpen(true)
+                }
                 className="flex items-center gap-2 border border-[#d6d0c6] px-4 py-3 text-[8px] font-semibold uppercase tracking-[0.2em] text-[#0d1c17]"
               >
                 <SlidersHorizontal className="h-3.5 w-3.5 text-[#9e6d48]" />
@@ -490,21 +793,32 @@ export default function InventoryPage() {
             </div>
 
             <span className="text-[8px] font-semibold uppercase tracking-[0.2em] text-[#7a7e7b]">
-              {filteredVehicles.length}{" "}
-              {filteredVehicles.length === 1
-                ? "Vehicle"
-                : "Vehicles"}
+              {loading
+                ? "Loading"
+                : `${filteredVehicles.length} ${
+                    filteredVehicles.length ===
+                    1
+                      ? "Vehicle"
+                      : "Vehicles"
+                  }`}
             </span>
 
             <button
               type="button"
-              onClick={() => setSortOpen((current) => !current)}
+              onClick={() =>
+                setSortOpen(
+                  (current) => !current
+                )
+              }
               className="flex items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.2em] text-[#5d6863]"
             >
               Sort
+
               <ChevronDown
                 className={`h-3 w-3 text-[#9e6d48] transition-transform ${
-                  sortOpen ? "rotate-180" : ""
+                  sortOpen
+                    ? "rotate-180"
+                    : ""
                 }`}
               />
             </button>
@@ -524,7 +838,9 @@ export default function InventoryPage() {
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               className="fixed inset-0 z-[80] bg-[#0d1c17]/50 backdrop-blur-sm"
-              onClick={() => setMobileFiltersOpen(false)}
+              onClick={() =>
+                setMobileFiltersOpen(false)
+              }
             />
 
             <motion.aside
@@ -532,7 +848,9 @@ export default function InventoryPage() {
               animate={{ x: 0 }}
               exit={{ x: "100%" }}
               transition={{
-                duration: shouldReduceMotion ? 0 : 0.45,
+                duration: shouldReduceMotion
+                  ? 0
+                  : 0.45,
                 ease: [0.16, 1, 0.3, 1],
               }}
               className="fixed right-0 top-0 z-[90] flex h-full w-[88%] max-w-[420px] flex-col bg-[#f4f0eb] shadow-2xl"
@@ -550,7 +868,9 @@ export default function InventoryPage() {
 
                 <button
                   type="button"
-                  onClick={() => setMobileFiltersOpen(false)}
+                  onClick={() =>
+                    setMobileFiltersOpen(false)
+                  }
                   className="flex h-9 w-9 items-center justify-center border border-[#d6d0c6]"
                   aria-label="Close filters"
                 >
@@ -567,27 +887,32 @@ export default function InventoryPage() {
                   </span>
 
                   <div className="grid grid-cols-2 gap-2">
-                    {CATEGORIES.map((category) => {
-                      const active =
-                        activeCategory === category;
+                    {CATEGORIES.map(
+                      (category) => {
+                        const active =
+                          activeCategory ===
+                          category;
 
-                      return (
-                        <button
-                          key={category}
-                          type="button"
-                          onClick={() =>
-                            setActiveCategory(category)
-                          }
-                          className={`border px-3 py-3 text-left text-[8px] font-semibold uppercase tracking-[0.18em] transition-colors ${
-                            active
-                              ? "border-[#0d1c17] bg-[#0d1c17] text-[#e7e3dc]"
-                              : "border-[#d6d0c6] text-[#5d6863]"
-                          }`}
-                        >
-                          {category}
-                        </button>
-                      );
-                    })}
+                        return (
+                          <button
+                            key={category}
+                            type="button"
+                            onClick={() =>
+                              setActiveCategory(
+                                category
+                              )
+                            }
+                            className={`border px-3 py-3 text-left text-[8px] font-semibold uppercase tracking-[0.18em] transition-colors ${
+                              active
+                                ? "border-[#0d1c17] bg-[#0d1c17] text-[#e7e3dc]"
+                                : "border-[#d6d0c6] text-[#5d6863]"
+                            }`}
+                          >
+                            {category}
+                          </button>
+                        );
+                      }
+                    )}
                   </div>
                 </div>
 
@@ -601,7 +926,9 @@ export default function InventoryPage() {
                   <div className="space-y-1">
                     <button
                       type="button"
-                      onClick={() => setActiveMake("ALL")}
+                      onClick={() =>
+                        setActiveMake("ALL")
+                      }
                       className={`flex w-full items-center justify-between border-b border-[#d6d0c6] py-3 text-left text-[9px] font-semibold uppercase tracking-[0.2em] ${
                         activeMake === "ALL"
                           ? "text-[#9e6d48]"
@@ -619,7 +946,9 @@ export default function InventoryPage() {
                       <button
                         key={make}
                         type="button"
-                        onClick={() => setActiveMake(make)}
+                        onClick={() =>
+                          setActiveMake(make)
+                        }
                         className={`flex w-full items-center justify-between border-b border-[#d6d0c6] py-3 text-left text-[9px] font-semibold uppercase tracking-[0.2em] ${
                           activeMake === make
                             ? "text-[#9e6d48]"
@@ -644,24 +973,32 @@ export default function InventoryPage() {
                   </span>
 
                   <div className="space-y-1">
-                    {SORT_OPTIONS.map((option) => (
-                      <button
-                        key={option.value}
-                        type="button"
-                        onClick={() => setSortBy(option.value)}
-                        className={`flex w-full items-center justify-between border-b border-[#d6d0c6] py-3 text-left text-[9px] font-semibold uppercase tracking-[0.15em] ${
-                          sortBy === option.value
-                            ? "text-[#9e6d48]"
-                            : "text-[#0d1c17]"
-                        }`}
-                      >
-                        {option.label}
+                    {SORT_OPTIONS.map(
+                      (option) => (
+                        <button
+                          key={option.value}
+                          type="button"
+                          onClick={() =>
+                            setSortBy(
+                              option.value
+                            )
+                          }
+                          className={`flex w-full items-center justify-between border-b border-[#d6d0c6] py-3 text-left text-[9px] font-semibold uppercase tracking-[0.15em] ${
+                            sortBy ===
+                            option.value
+                              ? "text-[#9e6d48]"
+                              : "text-[#0d1c17]"
+                          }`}
+                        >
+                          {option.label}
 
-                        {sortBy === option.value && (
-                          <Check className="h-3.5 w-3.5" />
-                        )}
-                      </button>
-                    ))}
+                          {sortBy ===
+                            option.value && (
+                            <Check className="h-3.5 w-3.5" />
+                          )}
+                        </button>
+                      )
+                    )}
                   </div>
                 </div>
 
@@ -670,7 +1007,9 @@ export default function InventoryPage() {
                 <button
                   type="button"
                   onClick={() =>
-                    setShowFavoritesOnly((current) => !current)
+                    setShowFavoritesOnly(
+                      (current) => !current
+                    )
                   }
                   className={`flex w-full items-center justify-between border border-[#d6d0c6] px-4 py-4 text-[9px] font-semibold uppercase tracking-[0.18em] ${
                     showFavoritesOnly
@@ -691,7 +1030,9 @@ export default function InventoryPage() {
                   </span>
 
                   {favorites.length > 0 && (
-                    <span>{favorites.length}</span>
+                    <span>
+                      {favorites.length}
+                    </span>
                   )}
                 </button>
               </div>
@@ -706,6 +1047,7 @@ export default function InventoryPage() {
                   className="flex w-full items-center justify-center gap-3 bg-[#0d1c17] py-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#e7e3dc]"
                 >
                   Reset Filters
+
                   <RotateCcw className="h-3.5 w-3.5" />
                 </button>
               </div>
@@ -715,330 +1057,441 @@ export default function InventoryPage() {
       </AnimatePresence>
 
       {/* ============================================================
-          INVENTORY HEADER
+          LOADING / ERROR
           ============================================================ */}
 
-      <section className="mx-auto max-w-[1500px] px-5 pb-7 pt-12 sm:px-8 md:px-12 md:pt-16 lg:px-16 xl:px-20">
-        <div className="flex items-end justify-between gap-6">
-          <div>
-            <span className="mb-2 block text-[8px] font-semibold uppercase tracking-[0.3em] text-[#9e6d48] sm:text-[9px]">
-              Available Now
-            </span>
+      {loading && (
+        <section className="mx-auto max-w-[1500px] px-5 py-20 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+          <div className="flex items-center gap-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#7a7e7b]">
+            <span className="h-px w-8 bg-[#9e6d48]" />
 
-            <h2
-              className="font-serif text-3xl font-light uppercase tracking-[-0.025em] sm:text-4xl md:text-5xl"
-              style={{
-                fontVariationSettings: '"SOFT" 100, "opsz" 144',
-              }}
-            >
-              {showFavoritesOnly
-                ? "YOUR FAVORITES"
-                : activeCategory === "ALL"
-                  ? "THE CURRENT COLLECTION"
-                  : activeCategory}
-            </h2>
+            Loading the collection...
           </div>
+        </section>
+      )}
 
-          <div className="hidden text-right sm:block">
-            <span className="block text-2xl font-light">
-              {filteredVehicles.length}
-            </span>
+      {!loading && error && (
+        <section className="mx-auto max-w-[1500px] px-5 py-24 text-center sm:px-8 md:px-12 lg:px-16 xl:px-20">
+          <span className="mb-4 block text-[9px] font-semibold uppercase tracking-[0.3em] text-[#9e6d48]">
+            Collection unavailable
+          </span>
 
-            <span className="text-[8px] font-semibold uppercase tracking-[0.25em] text-[#7a7e7b]">
-              Results
-            </span>
-          </div>
-        </div>
-      </section>
+          <h2 className="font-serif text-3xl font-light uppercase text-[#0d1c17] sm:text-4xl">
+            Unable to load the vehicles.
+          </h2>
 
-      {/* ============================================================
-          VEHICLE GALLERY
-          ============================================================ */}
+          <p className="mx-auto mt-4 max-w-sm text-xs font-light leading-relaxed text-[#6f706a]">
+            Please try again in a moment.
+          </p>
 
-      <section className="mx-auto max-w-[1500px] px-5 pb-24 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-        {filteredVehicles.length > 0 ? (
-          <motion.div
-            layout
-            className="grid grid-cols-1 gap-5 md:grid-cols-6 md:gap-5 lg:grid-cols-12 lg:gap-6"
+          <button
+            type="button"
+            onClick={() =>
+              window.location.reload()
+            }
+            className="mt-8 inline-flex items-center gap-3 bg-[#0d1c17] px-7 py-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#e7e3dc] transition-colors hover:bg-[#9e6d48] hover:text-[#0d1c17]"
           >
-            <AnimatePresence mode="popLayout">
-              {filteredVehicles.map((car, index) => {
-                const category = getCategory(
-                  car.make,
-                  car.model
-                );
+            Try Again
 
-                const isFavorite = favorites.includes(car.id);
+            <RotateCcw className="h-3.5 w-3.5" />
+          </button>
+        </section>
+      )}
 
-                /*
-                 * Editorial composition:
-                 *
-                 * First vehicle:
-                 *   desktop 8 columns
-                 *
-                 * Second:
-                 *   desktop 4 columns
-                 *
-                 * Third:
-                 *   desktop 5 columns
-                 *
-                 * Fourth:
-                 *   desktop 7 columns
-                 *
-                 * Pattern repeats naturally for larger inventories.
-                 */
+      {!loading && !error && (
+        <>
+          {/* ============================================================
+              INVENTORY HEADER
+              ============================================================ */}
 
-                const layoutPattern = index % 4;
+          <section className="mx-auto max-w-[1500px] px-5 pb-7 pt-12 sm:px-8 md:px-12 md:pt-16 lg:px-16 xl:px-20">
+            <div className="flex items-end justify-between gap-6">
+              <div>
+                <span className="mb-2 block text-[8px] font-semibold uppercase tracking-[0.3em] text-[#9e6d48] sm:text-[9px]">
+                  Available Now
+                </span>
 
-                const colSpan =
-                  layoutPattern === 0
-                    ? "md:col-span-4 lg:col-span-8"
-                    : layoutPattern === 1
-                      ? "md:col-span-2 lg:col-span-4"
-                      : layoutPattern === 2
-                        ? "md:col-span-3 lg:col-span-5"
-                        : "md:col-span-3 lg:col-span-7";
+                <h2
+                  className="font-serif text-3xl font-light uppercase tracking-[-0.025em] sm:text-4xl md:text-5xl"
+                  style={{
+                    fontVariationSettings:
+                      '"SOFT" 100, "opsz" 144',
+                  }}
+                >
+                  {showFavoritesOnly
+                    ? "YOUR FAVORITES"
+                    : activeCategory === "ALL"
+                      ? "THE CURRENT COLLECTION"
+                      : activeCategory}
+                </h2>
+              </div>
 
-                const imageHeight =
-                  layoutPattern === 0
-                    ? "h-[400px] sm:h-[460px] md:h-[480px]"
-                    : layoutPattern === 1
-                      ? "h-[330px] sm:h-[380px] md:h-[480px]"
-                      : "h-[340px] sm:h-[390px] md:h-[360px]";
+              <div className="hidden text-right sm:block">
+                <span className="block text-2xl font-light">
+                  {filteredVehicles.length}
+                </span>
 
-                return (
-                  <motion.article
-                    key={car.id}
-                    layout
-                    initial={
-                      shouldReduceMotion
-                        ? { opacity: 1 }
-                        : {
-                            opacity: 0,
-                            y: 35,
-                            scale: 0.985,
-                          }
-                    }
-                    animate={{
-                      opacity: 1,
-                      y: 0,
-                      scale: 1,
-                    }}
-                    exit={
-                      shouldReduceMotion
-                        ? { opacity: 0 }
-                        : {
-                            opacity: 0,
-                            scale: 0.97,
-                          }
-                    }
-                    transition={{
-                      duration: shouldReduceMotion ? 0 : 0.7,
-                      delay: shouldReduceMotion
-                        ? 0
-                        : Math.min(index * 0.06, 0.3),
-                      ease: [0.16, 1, 0.3, 1],
-                    }}
-                    className={`group relative overflow-hidden rounded-[2px] bg-[#eae5dd] ${colSpan}`}
-                  >
-                    {/* Image */}
+                <span className="text-[8px] font-semibold uppercase tracking-[0.25em] text-[#7a7e7b]">
+                  Results
+                </span>
+              </div>
+            </div>
+          </section>
 
-                    <Link
-                      href={`/inventory/${car.id}`}
-                      className="block"
-                      aria-label={`View ${car.make} ${car.model}`}
-                    >
-                      <div
-                        className={`relative w-full overflow-hidden bg-[#ded8ce] ${imageHeight}`}
-                      >
-                        <motion.div
-                          className="absolute inset-0"
-                          whileHover={
+          {/* ============================================================
+              VEHICLE GALLERY
+              ============================================================ */}
+
+          <section className="mx-auto max-w-[1500px] px-5 pb-24 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+            {filteredVehicles.length > 0 ? (
+              <motion.div
+                layout
+                className="grid grid-cols-1 gap-5 md:grid-cols-6 md:gap-5 lg:grid-cols-12 lg:gap-6"
+              >
+                <AnimatePresence mode="popLayout">
+                  {filteredVehicles.map(
+                    (car, index) => {
+                      const category =
+                        getCategory(
+                          car.make,
+                          car.model
+                        );
+
+                      const isFavorite =
+                        favorites.includes(
+                          car.id
+                        );
+
+                      /*
+                       * Editorial composition:
+                       *
+                       * First vehicle:
+                       *   desktop 8 columns
+                       *
+                       * Second:
+                       *   desktop 4 columns
+                       *
+                       * Third:
+                       *   desktop 5 columns
+                       *
+                       * Fourth:
+                       *   desktop 7 columns
+                       *
+                       * Pattern repeats naturally.
+                       */
+
+                      const layoutPattern =
+                        index % 4;
+
+                      const colSpan =
+                        layoutPattern === 0
+                          ? "md:col-span-4 lg:col-span-8"
+                          : layoutPattern === 1
+                            ? "md:col-span-2 lg:col-span-4"
+                            : layoutPattern === 2
+                              ? "md:col-span-3 lg:col-span-5"
+                              : "md:col-span-3 lg:col-span-7";
+
+                      const imageHeight =
+                        layoutPattern === 0
+                          ? "h-[400px] sm:h-[460px] md:h-[480px]"
+                          : layoutPattern === 1
+                            ? "h-[330px] sm:h-[380px] md:h-[480px]"
+                            : "h-[340px] sm:h-[390px] md:h-[360px]";
+
+                      return (
+                        <motion.article
+                          key={car.id}
+                          layout
+                          initial={
                             shouldReduceMotion
-                              ? undefined
+                              ? {
+                                  opacity: 1,
+                                }
                               : {
-                                  scale: 1.045,
+                                  opacity: 0,
+                                  y: 35,
+                                  scale: 0.985,
+                                }
+                          }
+                          animate={{
+                            opacity: 1,
+                            y: 0,
+                            scale: 1,
+                          }}
+                          exit={
+                            shouldReduceMotion
+                              ? {
+                                  opacity: 0,
+                                }
+                              : {
+                                  opacity: 0,
+                                  scale: 0.97,
                                 }
                           }
                           transition={{
-                            duration: 1,
-                            ease: [0.16, 1, 0.3, 1],
+                            duration:
+                              shouldReduceMotion
+                                ? 0
+                                : 0.7,
+                            delay:
+                              shouldReduceMotion
+                                ? 0
+                                : Math.min(
+                                    index * 0.06,
+                                    0.3
+                                  ),
+                            ease: [
+                              0.16,
+                              1,
+                              0.3,
+                              1,
+                            ],
                           }}
+                          className={`group relative overflow-hidden rounded-[2px] bg-[#eae5dd] ${colSpan}`}
                         >
-                          <Image
-                            src={
-                              car.heroImage ||
-                              car.thumbnail
-                            }
-                            alt={`${car.make} ${car.model}`}
-                            fill
-                            sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 66vw"
-                            className="object-cover object-center"
-                          />
-                        </motion.div>
+                          {/* Image */}
 
-                        {/* Gradient */}
-
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
-
-                        <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent" />
-
-                        {/* Top metadata */}
-
-                        <div className="absolute left-5 top-5 flex items-center gap-2 sm:left-6 sm:top-6">
-                          <span className="bg-[#0d1c17]/70 px-2.5 py-1.5 text-[7px] font-semibold uppercase tracking-[0.2em] text-[#e7e3dc] backdrop-blur-sm sm:text-[8px]">
-                            {category}
-                          </span>
-
-                          <span className="text-[8px] font-medium tracking-[0.15em] text-white/70">
-                            {car.year}
-                          </span>
-                        </div>
-
-                        {/* Favorite */}
-
-                        <button
-                          type="button"
-                          onClick={(event) => {
-                            event.preventDefault();
-                            event.stopPropagation();
-                            toggleFavorite(car.id);
-                          }}
-                          className="absolute right-5 top-5 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/20 text-white backdrop-blur-md transition-all hover:border-white/50 hover:bg-[#0d1c17] sm:right-6 sm:top-6"
-                          aria-label={
-                            isFavorite
-                              ? `Remove ${car.make} ${car.model} from favorites`
-                              : `Add ${car.make} ${car.model} to favorites`
-                          }
-                        >
-                          <Heart
-                            className={`h-3.5 w-3.5 transition-colors ${
-                              isFavorite
-                                ? "fill-[#c59b72] text-[#c59b72]"
-                                : ""
-                            }`}
-                          />
-                        </button>
-
-                        {/* Vehicle Information */}
-
-                        <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 md:p-7">
-                          <div className="flex items-end justify-between gap-4">
-                            <div>
-                              <span className="mb-1 block text-[8px] font-light uppercase tracking-[0.2em] text-white/55 sm:text-[9px]">
-                                {car.trim}
-                              </span>
-
-                              <h3
-                                className={`font-serif font-light uppercase leading-[0.92] tracking-[-0.015em] text-white ${
-                                  layoutPattern === 0
-                                    ? "text-2xl sm:text-3xl md:text-4xl"
-                                    : "text-xl sm:text-2xl md:text-3xl"
-                                }`}
-                                style={{
-                                  fontVariationSettings:
-                                    '"SOFT" 100, "opsz" 144',
+                          <Link
+                            href={`/inventory/${car.id}`}
+                            className="block"
+                            aria-label={`View ${car.make} ${car.model}`}
+                          >
+                            <div
+                              className={`relative w-full overflow-hidden bg-[#ded8ce] ${imageHeight}`}
+                            >
+                              <motion.div
+                                className="absolute inset-0"
+                                whileHover={
+                                  shouldReduceMotion
+                                    ? undefined
+                                    : {
+                                        scale: 1.045,
+                                      }
+                                }
+                                transition={{
+                                  duration: 1,
+                                  ease: [
+                                    0.16,
+                                    1,
+                                    0.3,
+                                    1,
+                                  ],
                                 }}
                               >
-                                {car.make}
-                                <br />
-                                {car.model}
-                              </h3>
+                                <Image
+                                  src={
+                                    car.heroImage ||
+                                    car.thumbnail
+                                  }
+                                  alt={`${car.make} ${car.model}`}
+                                  fill
+                                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 66vw"
+                                  className="object-cover object-center"
+                                />
+                              </motion.div>
+
+                              {/* Gradient */}
+
+                              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/10 to-transparent" />
+
+                              <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-transparent" />
+
+                              {/* Top metadata */}
+
+                              <div className="absolute left-5 top-5 flex items-center gap-2 sm:left-6 sm:top-6">
+                                <span className="bg-[#0d1c17]/70 px-2.5 py-1.5 text-[7px] font-semibold uppercase tracking-[0.2em] text-[#e7e3dc] backdrop-blur-sm sm:text-[8px]">
+                                  {category}
+                                </span>
+
+                                <span className="text-[8px] font-medium tracking-[0.15em] text-white/70">
+                                  {car.year}
+                                </span>
+
+                                {featuredVehicles.includes(
+                                  car.id
+                                ) && (
+                                  <span className="bg-[#9e6d48]/90 px-2.5 py-1.5 text-[7px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm sm:text-[8px]">
+                                    Featured
+                                  </span>
+                                )}
+                              </div>
+
+                              {/* Favorite */}
+
+                              <button
+                                type="button"
+                                onClick={(
+                                  event
+                                ) => {
+                                  event.preventDefault();
+                                  event.stopPropagation();
+
+                                  toggleFavorite(
+                                    car.id
+                                  );
+                                }}
+                                className="absolute right-5 top-5 z-20 flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-black/20 text-white backdrop-blur-md transition-all hover:border-white/50 hover:bg-[#0d1c17] sm:right-6 sm:top-6"
+                                aria-label={
+                                  isFavorite
+                                    ? `Remove ${car.make} ${car.model} from favorites`
+                                    : `Add ${car.make} ${car.model} to favorites`
+                                }
+                              >
+                                <Heart
+                                  className={`h-3.5 w-3.5 transition-colors ${
+                                    isFavorite
+                                      ? "fill-[#c59b72] text-[#c59b72]"
+                                      : ""
+                                  }`}
+                                />
+                              </button>
+
+                              {/* Vehicle Information */}
+
+                              <div className="absolute bottom-0 left-0 right-0 p-5 sm:p-6 md:p-7">
+                                <div className="flex items-end justify-between gap-4">
+                                  <div>
+                                    <span className="mb-1 block text-[8px] font-light uppercase tracking-[0.2em] text-white/55 sm:text-[9px]">
+                                      {
+                                        car.trim
+                                      }
+                                    </span>
+
+                                    <h3
+                                      className={`font-serif font-light uppercase leading-[0.92] tracking-[-0.015em] text-white ${
+                                        layoutPattern ===
+                                        0
+                                          ? "text-2xl sm:text-3xl md:text-4xl"
+                                          : "text-xl sm:text-2xl md:text-3xl"
+                                      }`}
+                                      style={{
+                                        fontVariationSettings:
+                                          '"SOFT" 100, "opsz" 144',
+                                      }}
+                                    >
+                                      {car.make}
+                                      <br />
+                                      {car.model}
+                                    </h3>
+                                  </div>
+
+                                  <span className="hidden text-sm font-light text-white sm:block md:text-base">
+                                    {formatPrice(
+                                      car.price
+                                    )}
+                                  </span>
+                                </div>
+
+                                <div className="mt-4 flex items-end justify-between border-t border-white/20 pt-3">
+                                  <div>
+                                    <span className="block text-[8px] font-light uppercase tracking-[0.12em] text-white/65 sm:text-[9px]">
+                                      {
+                                        car.engineSpec
+                                      }
+                                    </span>
+
+                                    <span className="mt-1 block text-[8px] font-light uppercase tracking-[0.12em] text-white/45 sm:text-[9px]">
+                                      {
+                                        car.powerSpec
+                                      }
+                                    </span>
+                                  </div>
+
+                                  <div className="flex items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.2em] text-[#c59b72] transition-colors group-hover:text-white">
+                                    View Vehicle
+
+                                    <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
+                                  </div>
+                                </div>
+
+                                {/* Mobile price */}
+
+                                <div className="mt-3 sm:hidden">
+                                  <span className="text-sm font-light text-white">
+                                    {formatPrice(
+                                      car.price
+                                    )}
+                                  </span>
+                                </div>
+                              </div>
                             </div>
+                          </Link>
+                        </motion.article>
+                      );
+                    }
+                  )}
+                </AnimatePresence>
+              </motion.div>
+            ) : (
+              /* ==========================================================
+                 EMPTY STATE
+                 ========================================================== */
 
-                            <span className="hidden text-sm font-light text-white sm:block md:text-base">
-                              {formatPrice(car.price)}
-                            </span>
-                          </div>
-
-                          <div className="mt-4 flex items-end justify-between border-t border-white/20 pt-3">
-                            <div>
-                              <span className="block text-[8px] font-light uppercase tracking-[0.12em] text-white/65 sm:text-[9px]">
-                                {car.engineSpec}
-                              </span>
-
-                              <span className="mt-1 block text-[8px] font-light uppercase tracking-[0.12em] text-white/45 sm:text-[9px]">
-                                {car.powerSpec}
-                              </span>
-                            </div>
-
-                            <div className="flex items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.2em] text-[#c59b72] transition-colors group-hover:text-white">
-                              View Vehicle
-                              <ArrowRight className="h-3 w-3 transition-transform duration-300 group-hover:translate-x-1" />
-                            </div>
-                          </div>
-
-                          {/* Mobile price */}
-
-                          <div className="mt-3 sm:hidden">
-                            <span className="text-sm font-light text-white">
-                              {formatPrice(car.price)}
-                            </span>
-                          </div>
-                        </div>
-                      </div>
-                    </Link>
-                  </motion.article>
-                );
-              })}
-            </AnimatePresence>
-          </motion.div>
-        ) : (
-          /* ==========================================================
-             EMPTY STATE
-             ========================================================== */
-
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="flex min-h-[420px] flex-col items-center justify-center border border-[#d6d0c6] px-6 text-center"
-          >
-            <span className="mb-4 text-[9px] font-semibold uppercase tracking-[0.3em] text-[#9e6d48]">
-              No matching vehicles
-            </span>
-
-            <h3 className="max-w-md font-serif text-3xl font-light uppercase tracking-[-0.02em] text-[#0d1c17]">
-              Nothing in the current selection.
-            </h3>
-
-            <p className="mt-4 max-w-sm text-xs font-light leading-relaxed text-[#6f706a]">
-              Adjust your filters to explore the full MSYNTRA
-              collection.
-            </p>
-
-            <button
-              type="button"
-              onClick={resetFilters}
-              className="mt-8 inline-flex items-center gap-3 bg-[#0d1c17] px-7 py-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#e7e3dc] transition-colors hover:bg-[#9e6d48] hover:text-[#0d1c17]"
-            >
-              Reset Selection
-              <RotateCcw className="h-3.5 w-3.5" />
-            </button>
-          </motion.div>
-        )}
-
-        {/* Results footer */}
-
-        {filteredVehicles.length > 0 && (
-          <div className="mt-12 flex flex-col items-center justify-between gap-5 border-t border-[#d6d0c6] pt-7 sm:flex-row">
-            <span className="text-[8px] font-semibold uppercase tracking-[0.25em] text-[#7a7e7b]">
-              Showing {filteredVehicles.length} of{" "}
-              {vehicles.length} vehicles
-            </span>
-
-            {hasActiveFilters && (
-              <button
-                type="button"
-                onClick={resetFilters}
-                className="flex items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.25em] text-[#9e6d48] transition-colors hover:text-[#0d1c17]"
+              <motion.div
+                initial={{
+                  opacity: 0,
+                  y: 20,
+                }}
+                animate={{
+                  opacity: 1,
+                  y: 0,
+                }}
+                className="flex min-h-[420px] flex-col items-center justify-center border border-[#d6d0c6] px-6 text-center"
               >
-                Clear Selection
-                <X className="h-3 w-3" />
-              </button>
+                <span className="mb-4 text-[9px] font-semibold uppercase tracking-[0.3em] text-[#9e6d48]">
+                  No matching vehicles
+                </span>
+
+                <h3 className="max-w-md font-serif text-3xl font-light uppercase tracking-[-0.02em] text-[#0d1c17]">
+                  Nothing in the current
+                  selection.
+                </h3>
+
+                <p className="mt-4 max-w-sm text-xs font-light leading-relaxed text-[#6f706a]">
+                  Adjust your filters to
+                  explore the full MSYNTRA
+                  collection.
+                </p>
+
+                <button
+                  type="button"
+                  onClick={resetFilters}
+                  className="mt-8 inline-flex items-center gap-3 bg-[#0d1c17] px-7 py-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#e7e3dc] transition-colors hover:bg-[#9e6d48] hover:text-[#0d1c17]"
+                >
+                  Reset Selection
+
+                  <RotateCcw className="h-3.5 w-3.5" />
+                </button>
+              </motion.div>
             )}
-          </div>
-        )}
-      </section>
+
+            {/* Results footer */}
+
+            {filteredVehicles.length > 0 && (
+              <div className="mt-12 flex flex-col items-center justify-between gap-5 border-t border-[#d6d0c6] pt-7 sm:flex-row">
+                <span className="text-[8px] font-semibold uppercase tracking-[0.25em] text-[#7a7e7b]">
+                  Showing{" "}
+                  {filteredVehicles.length}{" "}
+                  of {vehicles.length} vehicles
+                </span>
+
+                {hasActiveFilters && (
+                  <button
+                    type="button"
+                    onClick={resetFilters}
+                    className="flex items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.25em] text-[#9e6d48] transition-colors hover:text-[#0d1c17]"
+                  >
+                    Clear Selection
+
+                    <X className="h-3 w-3" />
+                  </button>
+                )}
+              </div>
+            )}
+          </section>
+        </>
+      )}
 
       {/* ============================================================
           BOTTOM CTA
@@ -1048,13 +1501,15 @@ export default function InventoryPage() {
         <div className="mx-auto flex max-w-[1500px] flex-col justify-between gap-10 lg:flex-row lg:items-end">
           <div className="max-w-3xl">
             <span className="mb-4 block text-[9px] font-semibold uppercase tracking-[0.3em] text-[#b07d58]">
-              Can't find what you're looking for?
+              Can't find what you're looking
+              for?
             </span>
 
             <h2
               className="font-serif text-4xl font-light uppercase leading-[0.92] tracking-[-0.025em] sm:text-5xl md:text-6xl"
               style={{
-                fontVariationSettings: '"SOFT" 100, "opsz" 144',
+                fontVariationSettings:
+                  '"SOFT" 100, "opsz" 144',
               }}
             >
               THE RIGHT CAR

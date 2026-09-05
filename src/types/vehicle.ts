@@ -43,4 +43,8 @@ export interface Vehicle {
     term: string;
     apr: string;
   };
+
+  category?: string;
+  status?: string;
+  featured?: boolean;
 }

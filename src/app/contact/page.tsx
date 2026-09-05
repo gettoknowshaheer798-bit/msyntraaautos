@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import { Navbar } from "@/components/navigation/Navbar";
 import { getFeaturedVehicles } from "@/utils/supabase/vehicles";
 
 const contactChannels = [
@@ -60,7 +59,6 @@ export default async function ContactPage() {
 
   return (
     <main className="min-h-screen bg-[#f4f0eb] text-[#0d1c17]">
-      <Navbar />
 
       {/* =========================================================
           HERO

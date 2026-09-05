@@ -6,259 +6,157 @@ import Link from "next/link";
 
 export default function PlanYourDrive() {
   return (
-    <section className="w-full min-h-screen bg-[#f4f0eb] text-[#0d1c17] px-8 md:px-16 lg:px-24 py-24 flex flex-col justify-center">
+    <section className="w-full min-h-screen bg-[#F4F0EB] text-[#0D1C17] px-6 md:px-16 lg:px-24 py-20 flex flex-col justify-center">
       <div className="max-w-[1500px] w-full mx-auto">
-        
-        {/* SECTION HEADER */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-end mb-16">
-          <div className="lg:col-span-8">
-            <span className="text-[11px] tracking-[0.3em] text-[#9e6d48] uppercase font-semibold block mb-6">
-              04 / MAKE IT YOURS
+        {/* HEADER */}
+        <div className="mb-12">
+          <div className="flex items-center gap-4 mb-4">
+            <span className="text-[10px] tracking-[0.3em] text-[#B08968] uppercase font-semibold">
+              04
             </span>
-            <h2
-              className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-[90px] tracking-[-0.03em] text-[#0d1c17] uppercase font-light leading-[0.9]"
-              style={{ fontVariationSettings: '"SOFT" 100, "opsz" 144' }}
-            >
-              READY TO <br />
-              MAKE IT YOURS?
-            </h2>
+            <div className="w-12 h-px bg-[#B08968]/40" />
+            <span className="text-[10px] tracking-[0.25em] text-[#59645F] uppercase">
+              MAKE IT YOURS
+            </span>
           </div>
-          <div className="lg:col-span-4 lg:text-right">
-            <p className="text-xs md:text-sm text-[#5d6863] font-light leading-relaxed max-w-xs lg:ml-auto">
-              Flexible options. Clear value. <br />
-              Personalized for the way you drive.
-            </p>
-            <div className="w-8 h-[1px] bg-[#9e6d48]/60 mt-4 lg:ml-auto" />
-          </div>
+          <h2 className="font-serif text-4xl md:text-5xl lg:text-6xl font-light tracking-tight leading-[0.95]">
+            READY TO MAKE IT YOURS?
+          </h2>
+          <p className="mt-4 max-w-xl text-sm text-[#59645F] leading-relaxed">
+            From flexible financing to vehicle trade-ins, we&apos;ll help you
+            find the right path to your next car.
+          </p>
         </div>
 
-        {/* BENTO GRID (TOP ROW: 2 CARDS) */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          
-          {/* CARD 1: FINANCING (Light Theme Card) */}
-          <div className="relative rounded-2xl overflow-hidden bg-[#eae5dd] border border-[#dcd5c9] p-8 md:p-12 min-h-[500px] flex flex-col justify-between group">
-            {/* Background Car Image */}
-            <div className="absolute inset-0 z-0 opacity-80 group-hover:scale-105 transition-transform duration-700">
-              <Image
-                src="/images/vehicles/BMW-M8-Gran-Coupe.png"
-                alt="Financing Vehicle"
-                fill
-                className="object-cover object-right-bottom"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#eae5dd] via-[#eae5dd]/70 to-transparent" />
-            </div>
-
-            {/* Top Tag */}
-            <div className="relative z-10 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full border border-[#9e6d48]/30 flex items-center justify-center bg-[#eae5dd]/80 backdrop-blur-sm">
-                <Calculator className="w-3.5 h-3.5 text-[#9e6d48]" />
+        {/* BENTO GRID */}
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+          {/* FINANCING CARD */}
+          <div className="relative min-h-[460px] rounded-2xl overflow-hidden bg-[#EAE3D9] border border-[#D5C2B1]/40 group">
+            <Image
+              src="/images/vehicles/Make-It-Yours(Home).png"
+              alt="Financing"
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0D1C17]/85 via-[#0D1C17]/30 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-8 md:p-10 text-white">
+              <div className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center mb-6 backdrop-blur-sm">
+                <Calculator className="w-4 h-4 text-white" />
               </div>
-              <span className="text-[10px] tracking-[0.25em] text-[#9e6d48] uppercase font-semibold">
+              <span className="text-[9px] tracking-[0.25em] uppercase text-[#D6B18F] font-semibold block mb-2">
                 FINANCING
               </span>
-            </div>
-
-            {/* Left Content & Calculator Floating Card */}
-            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-12 gap-6 items-end mt-12">
-              <div className="sm:col-span-6">
-                <h3 className="font-serif text-4xl md:text-5xl text-[#0d1c17] font-light leading-tight mb-4">
-                  Make it <br />
-                  yours.
-                </h3>
-                <p className="text-xs text-[#5d6863] font-light leading-relaxed max-w-xs mb-8">
-                  Personalized financing options that fit your lifestyle.
-                </p>
-                <Link
-                  href="/financing"
-                  className="inline-flex items-center gap-3 px-6 py-3 border border-[#9e6d48]/50 text-[10px] tracking-[0.2em] text-[#0d1c17] uppercase font-semibold hover:bg-[#0d1c17] hover:text-[#e7e3dc] transition-all group/btn"
-                >
-                  <span>CALCULATE PAYMENT</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-
-              {/* Calculator UI Card Overlay */}
-              <div className="sm:col-span-6 bg-[#f4f0eb]/90 backdrop-blur-md rounded-xl p-6 border border-[#dcd5c9] shadow-xl text-[11px]">
-                <div className="text-[9px] tracking-widest text-[#8a9992] uppercase font-semibold mb-1">
-                  ESTIMATED PAYMENT
-                </div>
-                <div className="font-serif text-3xl text-[#0d1c17] mb-6">
-                  $1,248 <span className="text-xs font-sans text-[#8a9992]">/mo*</span>
-                </div>
-
-                <div className="space-y-4 text-[10px]">
-                  <div className="flex justify-between text-[#5d6863]">
-                    <span>VEHICLE PRICE</span>
-                    <span className="font-medium text-[#0d1c17]">$142,850</span>
-                  </div>
-                  <div className="flex justify-between text-[#5d6863]">
-                    <span>DOWN PAYMENT</span>
-                    <span className="font-medium text-[#0d1c17]">$25,000</span>
-                  </div>
-                  <div className="w-full bg-[#dcd5c9] h-1 rounded-full overflow-hidden">
-                    <div className="bg-[#9e6d48] w-2/5 h-full" />
-                  </div>
-
-                  <div className="flex justify-between text-[#5d6863] pt-2">
-                    <span>TERM</span>
-                    <span className="font-medium text-[#0d1c17]">60 MONTHS</span>
-                  </div>
-                  <div className="flex justify-between text-[#5d6863]">
-                    <span>APR</span>
-                    <span className="font-medium text-[#0d1c17]">5.49%</span>
-                  </div>
-                  <div className="w-full bg-[#dcd5c9] h-1 rounded-full overflow-hidden">
-                    <div className="bg-[#9e6d48] w-3/5 h-full" />
-                  </div>
-                </div>
-
-                <div className="text-[8px] text-[#8a9992] mt-4">
-                  *Estimated with approved credit.
-                </div>
-              </div>
+              <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light leading-[0.95] mb-4">
+                Your terms.
+                <br />
+                Your choice.
+              </h3>
+              <p className="text-xs md:text-[13px] text-white/75 max-w-sm leading-relaxed mb-6">
+                Explore flexible financing options designed around your
+                budget, lifestyle, and plans.
+              </p>
+              <Link
+                href="/financing"
+                className="inline-flex items-center gap-3 text-[10px] tracking-[0.2em] uppercase font-semibold text-white group/link"
+              >
+                <span>EXPLORE FINANCING</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+              </Link>
             </div>
           </div>
 
-          {/* CARD 2: TRADE-IN (Dark Green Theme Card) */}
-          <div className="relative rounded-2xl overflow-hidden bg-[#07130e] text-[#e7e3dc] border border-[#122820] p-8 md:p-12 min-h-[500px] flex flex-col justify-between group">
-            {/* Background Car Image */}
-            <div className="absolute inset-0 z-0 opacity-70 group-hover:scale-105 transition-transform duration-700">
-              <Image
-                src="/images/vehicles/Rolls-Royce-Ghost.png"
-                alt="Trade-In Vehicle"
-                fill
-                className="object-cover object-right"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-[#07130e] via-[#07130e]/80 to-transparent" />
-            </div>
-
-            {/* Top Tag */}
-            <div className="relative z-10 flex items-center gap-3">
-              <div className="w-8 h-8 rounded-full border border-[#9e6d48]/30 flex items-center justify-center bg-[#07130e]/80 backdrop-blur-sm">
-                <Tag className="w-3.5 h-3.5 text-[#9e6d48]" />
+          {/* TRADE-IN CARD */}
+          <div className="relative min-h-[460px] rounded-2xl overflow-hidden bg-[#EAE3D9] border border-[#D5C2B1]/40 group">
+            <Image
+              src="/images/vehicles/Start-Your-Next(Home).png"
+              alt="Trade in your vehicle"
+              fill
+              className="object-cover transition-transform duration-700 group-hover:scale-105"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0D1C17]/85 via-[#0D1C17]/30 to-transparent" />
+            <div className="absolute inset-x-0 bottom-0 p-8 md:p-10 text-white">
+              <div className="w-10 h-10 rounded-full border border-white/30 flex items-center justify-center mb-6 backdrop-blur-sm">
+                <Tag className="w-4 h-4 text-white" />
               </div>
-              <span className="text-[10px] tracking-[0.25em] text-[#9e6d48] uppercase font-semibold">
+              <span className="text-[9px] tracking-[0.25em] uppercase text-[#D6B18F] font-semibold block mb-2">
                 TRADE-IN
               </span>
-            </div>
-
-            {/* Content & Steps Box */}
-            <div className="relative z-10 grid grid-cols-1 sm:grid-cols-12 gap-6 items-end mt-12">
-              <div className="sm:col-span-6">
-                <h3 className="font-serif text-4xl md:text-5xl text-[#e7e3dc] font-light leading-tight mb-4">
-                  Start your <br />
-                  next.
-                </h3>
-                <p className="text-xs text-[#8a9992] font-light leading-relaxed max-w-xs mb-8">
-                  Get a competitive offer for your current vehicle in minutes.
-                </p>
-                <Link
-                  href="/trade-in"
-                  className="inline-flex items-center gap-3 px-6 py-3 border border-[#9e6d48]/50 text-[10px] tracking-[0.2em] text-[#e7e3dc] uppercase font-semibold hover:bg-[#9e6d48] hover:text-[#07130e] transition-all group/btn"
-                >
-                  <span>VALUE MY CAR</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
-                </Link>
-              </div>
-
-              {/* Steps Floating Card */}
-              <div className="sm:col-span-6 bg-[#0a1a14]/90 backdrop-blur-md rounded-xl p-6 border border-[#18362b] space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="w-6 h-6 rounded-full border border-[#9e6d48]/40 flex items-center justify-center text-[10px] text-[#9e6d48]">
-                    1
-                  </div>
-                  <div>
-                    <div className="text-[10px] tracking-wider text-[#e7e3dc] uppercase font-medium">
-                      YOUR VEHICLE
-                    </div>
-                    <div className="text-[9px] text-[#8a9992] font-light">
-                      Tell us about your car.
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-6 h-6 rounded-full border border-[#9e6d48]/40 flex items-center justify-center text-[10px] text-[#9e6d48]">
-                    2
-                  </div>
-                  <div>
-                    <div className="text-[10px] tracking-wider text-[#e7e3dc] uppercase font-medium">
-                      GET YOUR OFFER
-                    </div>
-                    <div className="text-[9px] text-[#8a9992] font-light">
-                      Receive your estimate.
-                    </div>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="w-6 h-6 rounded-full border border-[#9e6d48]/40 flex items-center justify-center text-[10px] text-[#9e6d48]">
-                    3
-                  </div>
-                  <div>
-                    <div className="text-[10px] tracking-wider text-[#e7e3dc] uppercase font-medium">
-                      APPLY & UPGRADE
-                    </div>
-                    <div className="text-[9px] text-[#8a9992] font-light">
-                      Use it toward your next drive.
-                    </div>
-                  </div>
-                </div>
-              </div>
+              <h3 className="font-serif text-3xl md:text-4xl lg:text-5xl font-light leading-[0.95] mb-4">
+                Start your
+                <br />
+                next chapter.
+              </h3>
+              <p className="text-xs md:text-[13px] text-white/70 max-w-sm leading-relaxed mb-6">
+                Get a transparent valuation for your current vehicle and put
+                its value toward something new.
+              </p>
+              <Link
+                href="/trade-in"
+                className="inline-flex items-center gap-3 text-[10px] tracking-[0.2em] uppercase font-semibold text-white group/link"
+              >
+                <span>VALUE MY CAR</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover/link:translate-x-1 transition-transform" />
+              </Link>
             </div>
           </div>
-
         </div>
 
-        {/* BOTTOM ROW: BOOK A VIEWING BANNER */}
-        <div className="relative rounded-2xl overflow-hidden bg-[#eae5dd] border border-[#dcd5c9] p-8 md:p-10 flex flex-col md:flex-row items-center justify-between gap-8 group">
-          <div className="absolute inset-0 z-0 opacity-40 group-hover:scale-105 transition-transform duration-700">
+        {/* BOOKING CARD */}
+        <div className="relative mt-5 rounded-2xl overflow-hidden bg-[#EAE3D9] border border-[#D5C2B1]/50 p-6 md:p-8 flex flex-col md:flex-row items-center justify-between gap-6 group">
+          {/* Left Side: Image with gradient mask fading to background color */}
+          <div className="absolute inset-y-0 left-0 w-full md:w-1/2 z-0 pointer-events-none overflow-hidden">
             <Image
-              src="/images/vehicles/S-Class.jpeg"
+              src="/images/vehicles/Experience-it(Home).png"
               alt="Interior Viewing"
               fill
-              className="object-cover object-left"
+              className="object-cover object-left transition-transform duration-700 group-hover:scale-105"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-[#eae5dd] via-[#eae5dd]/90 to-transparent" />
+            {/* Fade Out Effect */}
+            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#EAE3D9]/60 to-[#EAE3D9]" />
           </div>
 
-          <div className="relative z-10 flex items-center gap-6">
-            <div className="w-10 h-10 rounded-full border border-[#9e6d48]/30 flex items-center justify-center bg-[#eae5dd]/80 backdrop-blur-sm shrink-0">
-              <Calendar className="w-4 h-4 text-[#9e6d48]" />
+          {/* Center Content Area */}
+          <div className="relative z-10 flex items-center gap-5 md:ml-[22%] lg:ml-[28%] max-w-2xl">
+            {/* Calendar Icon Badge */}
+            <div className="shrink-0 w-12 h-12 rounded-full border border-[#B08968]/40 flex items-center justify-center bg-[#EAE3D9]/80 backdrop-blur-sm">
+              <Calendar className="w-5 h-5 text-[#B08968]" />
             </div>
-            <div>
-              <span className="text-[10px] tracking-[0.25em] text-[#9e6d48] uppercase font-semibold block mb-1">
+
+            {/* Content Text */}
+            <div className="space-y-1">
+              <span className="text-[10px] tracking-[0.25em] text-[#B08968] uppercase font-semibold block">
                 BOOK A VIEWING / TEST DRIVE
               </span>
-              <h3 className="font-serif text-3xl md:text-4xl text-[#0d1c17] font-light mb-2">
+              <h3 className="font-serif text-2xl md:text-3xl text-[#1C2826] font-light tracking-tight leading-tight">
                 Experience it in person.
               </h3>
-              <p className="text-xs text-[#5d6863] font-light">
+              <p className="text-xs md:text-sm text-[#5C6460] font-normal leading-relaxed">
                 Schedule a private viewing or book a test drive with our specialists.
               </p>
             </div>
           </div>
 
+          {/* Right Side: CTA Button */}
           <div className="relative z-10 shrink-0">
             <Link
               href="/contact"
-              className="inline-flex items-center gap-3 px-8 py-4 border border-[#9e6d48]/50 text-[10px] tracking-[0.25em] text-[#0d1c17] uppercase font-semibold hover:bg-[#0d1c17] hover:text-[#e7e3dc] transition-all group/btn"
+              className="inline-flex items-center gap-3 px-6 py-3.5 border border-[#B08968]/60 text-[10px] tracking-[0.2em] text-[#2C3531] uppercase font-semibold hover:bg-[#B08968] hover:text-white transition-all duration-300 group/btn rounded-sm"
             >
               <span>BOOK NOW</span>
-              <ArrowRight className="w-3.5 h-3.5 group-hover/btn:translate-x-1 transition-transform" />
+              <ArrowRight className="w-3.5 h-3.5 text-[#B08968] group-hover/btn:text-white group-hover/btn:translate-x-1 transition-all" />
             </Link>
           </div>
         </div>
 
-        {/* FOOTER MOTTO */}
-        <div className="text-center mt-16 pt-8 border-t border-[#dcd5c9]">
-          <div className="w-8 h-[1px] bg-[#9e6d48]/60 mx-auto mb-4" />
-          <p className="text-[11px] tracking-[0.25em] text-[#5d6863] uppercase font-medium">
+        {/* FOOTER STATEMENT */}
+        <div className="mt-16 pt-8 border-t border-[#D5C2B1]/40 flex flex-col md:flex-row md:items-center md:justify-between gap-5">
+          <span className="text-[8px] tracking-[0.3em] text-[#B08968] uppercase font-semibold">
+            THE MSYNTRA STANDARD
+          </span>
+          <p className="font-serif text-xl md:text-2xl font-light text-[#59645F]">
             WE&apos;RE HERE TO HELP YOU DRIVE WHAT DEFINES YOU.
           </p>
-          <div className="w-8 h-[1px] bg-[#9e6d48]/60 mx-auto mt-4" />
         </div>
-
       </div>
     </section>
   );

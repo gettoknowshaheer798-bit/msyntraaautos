@@ -6,25 +6,21 @@ import Link from "next/link";
 
 export default function ReserveExperience() {
   return (
-    <section className="relative w-full h-screen min-h-[650px] bg-[#07130e] text-[#e7e3dc] overflow-hidden flex flex-col justify-end pb-20 md:pb-28">
-      
-      {/* BACKGROUND IMAGE WITH WARM SUNSET / COASTAL OVERLAY */}
+    <section className="relative w-full h-screen min-h-[650px] bg-[#07130e] text-[#e7e3dc] overflow-hidden flex flex-col justify-end pb-80 md:pb-90">
+      {/* BACKGROUND IMAGE */}
       <div className="absolute inset-0 z-0">
         <Image
-          src="/images/vehicles/BMW-M8-Gran-Coupe(Hero).png"
+          src="/images/vehicles/Final-Drivee(Home).png"
           alt="Aston Martin Final Drive"
           fill
           priority
           className="object-cover object-center scale-105"
         />
-        {/* Soft Dark Vignette & Gradient Overlays for Text Legibility */}
-        <div className="absolute inset-0 bg-gradient-to-t from-[#07130e] via-[#07130e]/30 to-[#07130e]/50" />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#07130e]/85 via-transparent to-transparent" />
       </div>
 
-      {/* MAIN CONTENT (LEFT ALIGNED EDITORIAL TEXT) */}
-      <div className="relative z-10 w-full px-8 md:px-16 lg:px-24 max-w-[1500px] mx-auto">
-        <div className="max-w-2xl">
+      {/* MAIN CONTENT */}
+      <div className="relative z-10 w-full px-0 max-w-[1500px] mx-auto -translate-x-8 md:-translate-x-16 lg:-translate-x-24">
+        <div className="max-w-none">
           {/* Section Tag */}
           <div className="flex items-center gap-3 mb-6">
             <span className="text-[11px] tracking-[0.3em] text-[#9e6d48] uppercase font-semibold">
@@ -34,7 +30,7 @@ export default function ReserveExperience() {
 
           {/* Main Display Headline */}
           <h2
-            className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-[88px] tracking-[-0.035em] text-[#e7e3dc] uppercase font-light leading-[0.92] mb-10"
+            className="font-serif text-5xl sm:text-6xl md:text-7xl lg:text-[86px] tracking-[-0.035em] text-[#e7e3dc] uppercase font-light leading-[0.92] mb-10 whitespace-nowrap"
             style={{ fontVariationSettings: '"SOFT" 100, "opsz" 144' }}
           >
             YOUR NEXT DRIVE <br />
@@ -51,7 +47,6 @@ export default function ReserveExperience() {
           </Link>
         </div>
       </div>
-
     </section>
   );
 }

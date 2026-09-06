@@ -79,7 +79,7 @@ export default function VehicleFeaturesHistorySection({
             whileInView="visible"
             viewport={{ once: true, amount: 0.2 }}
           >
-            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+            <p className="text-[10px] tracking-[0.28em] text-[#07130e]">
               FEATURES
             </p>
 
@@ -117,7 +117,7 @@ export default function VehicleFeaturesHistorySection({
             viewport={{ once: true, amount: 0.2 }}
             className="relative text-left lg:ml-80 xl:ml-100"
           >
-            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+            <p className="text-[10px] tracking-[0.28em] text-[#07130e]">
               VEHICLE HISTORY
             </p>
 
@@ -129,11 +129,11 @@ export default function VehicleFeaturesHistorySection({
                     className="flex items-center gap-3"
                   >
                     <Check
-                      className="h-4 w-4 shrink-0 text-[#a8754d]"
+                      className="h-4 w-4 shrink-0 text-[#07130e]"
                       strokeWidth={2}
                     />
 
-                    <span className="text-sm text-[#303530]">
+                    <span className="text-sm text-[#07130e]">
                       {item}
                     </span>
                   </div>
@@ -157,7 +157,7 @@ export default function VehicleFeaturesHistorySection({
           {/* INSPECTION REPORT */}
 
           <div>
-            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+            <p className="text-[10px] tracking-[0.28em] text-[#07130e]">
               INSPECTION REPORT
             </p>
 
@@ -169,11 +169,11 @@ export default function VehicleFeaturesHistorySection({
                     className="flex items-center gap-3"
                   >
                     <Check
-                      className="h-4 w-4 shrink-0 text-[#a8754d]"
+                      className="h-4 w-4 shrink-0 text-[#07130e]"
                       strokeWidth={2}
                     />
 
-                    <span className="text-sm text-[#303530]">
+                    <span className="text-sm text-[#07130e]">
                       {item}
                     </span>
                   </div>
@@ -183,7 +183,7 @@ export default function VehicleFeaturesHistorySection({
 
             <Link
               href="/contact"
-              className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#a8754d] transition-colors hover:text-[#102019]"
+              className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#07130e] transition-colors hover:text-[#102019]"
             >
               View Full Inspection Report →
             </Link>
@@ -207,7 +207,7 @@ export default function VehicleFeaturesHistorySection({
             {/* FINANCING */}
 
             <div>
-              <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+              <p className="text-[10px] tracking-[0.28em] text-[#07130e]">
                 FINANCING ESTIMATE
               </p>
 
@@ -226,7 +226,7 @@ export default function VehicleFeaturesHistorySection({
 
               <Link
                 href="/financing"
-                className="mt-4 inline-flex items-center gap-2 border border-[#102019]/15 px-4 py-2.5 text-[9px] uppercase tracking-[0.2em] text-[#102019] transition-colors hover:border-[#a8754d] hover:text-[#a8754d]"
+                className="mt-4 inline-flex items-center gap-2 border border-[#102019]/15 px-4 py-2.5 text-[9px] uppercase tracking-[0.2em] text-[#102019] transition-colors hover:bg-[#07130e] hover:border-[#07130e] hover:text-[#e7e3dc]"
               >
                 Calculate Your Payment →
               </Link>
@@ -235,13 +235,13 @@ export default function VehicleFeaturesHistorySection({
             {/* TRADE-IN */}
 
             <div className="border-t border-[#102019]/10 pt-6">
-              <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+              <p className="text-[10px] tracking-[0.28em] text-[#07130e]">
                 TRADE-IN VALUE
               </p>
 
               <div className="mt-3 flex items-start gap-3">
                 <Car
-                  className="h-5 w-5 shrink-0 text-[#a8754d]"
+                  className="h-5 w-5 shrink-0 text-[#07130e]"
                   strokeWidth={1.3}
                 />
 
@@ -253,7 +253,7 @@ export default function VehicleFeaturesHistorySection({
 
               <Link
                 href="/trade-in"
-                className="mt-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#a8754d] transition-colors hover:text-[#102019]"
+                className="mt-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#07130e] transition-colors hover:text-[#102019]"
               >
                 Value My Trade →
               </Link>

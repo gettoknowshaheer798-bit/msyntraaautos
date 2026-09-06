@@ -111,7 +111,7 @@ export default async function VehicleDetailPage({
   );
 
   return (
-    <main className="min-h-screen bg-[#f4f0eb] text-[#0d1c17] font-sans selection:bg-[#9e6d48] selection:text-white">
+    <main className="min-h-screen bg-[#f4f0eb] text-[#0d1c17] font-sans selection:bg-[#07130e] selection:text-white">
       <VehicleHeroSection vehicle={vehicle} />
 
       <VehicleDetailsSection vehicle={vehicle} />

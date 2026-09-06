@@ -110,7 +110,7 @@ export default function VehicleHeroSection({
             RIGHT: GREEN INFO PANEL
         ======================================================= */}
         <div className="flex min-h-[60vh] flex-col justify-center bg-[#07130e] px-8 py-16 text-[#e7e3dc] md:px-12 lg:min-h-0 lg:px-10 lg:py-24 xl:px-14">
-          <span className="text-[11px] tracking-[0.3em] text-[#c79f78]">
+          <span className="text-[11px] tracking-[0.3em] text-[#e7e3dc]">
             {vehicle.year}
           </span>
 
@@ -133,15 +133,15 @@ export default function VehicleHeroSection({
 
           <div className="mt-7 space-y-3.5 text-sm">
             <div className="flex items-center gap-3 text-white/85">
-              <Zap className="h-4 w-4 shrink-0 text-[#c79f78]" />
+              <Zap className="h-4 w-4 shrink-0 text-[#e7e3dc]" />
               <span>{vehicle.powerSpec}</span>
             </div>
             <div className="flex items-center gap-3 text-white/85">
-              <Cog className="h-4 w-4 shrink-0 text-[#c79f78]" />
+              <Cog className="h-4 w-4 shrink-0 text-[#e7e3dc]" />
               <span>{vehicle.engineSpec}</span>
             </div>
             <div className="flex items-center gap-3 text-white/85">
-              <Disc3 className="h-4 w-4 shrink-0 text-[#c79f78]" />
+              <Disc3 className="h-4 w-4 shrink-0 text-[#e7e3dc]" />
               <span>{vehicle.specs?.drivetrain ?? "All-Wheel Drive"}</span>
             </div>
           </div>
@@ -150,7 +150,7 @@ export default function VehicleHeroSection({
             href={`/contact?vehicle=${encodeURIComponent(
               `${vehicle.year} ${vehicle.make} ${vehicle.model}`
             )}&type=viewing`}
-            className="mt-8 inline-flex items-center justify-center gap-3 bg-[#b07d58] px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#07130e] transition-colors hover:bg-white"
+            className="mt-8 inline-flex items-center justify-center gap-3 bg-[#e7e3dc] border border-[#e7e3dc] px-6 py-4 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#07130e] transition-colors hover:bg-[#07130e] hover:border-[#e7e3dc] hover:text-[#e7e3dc]"
           >
             Book a Viewing
             <Calendar className="h-3.5 w-3.5" />

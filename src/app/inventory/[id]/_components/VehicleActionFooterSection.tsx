@@ -88,7 +88,7 @@ export default function VehicleActionFooterSection({
                 href={`/contact?vehicle=${encodeURIComponent(
                   `${vehicle.year} ${vehicle.make} ${vehicle.model}`
                 )}&type=viewing`}
-                className="inline-flex h-12 items-center justify-center gap-3 bg-[#b07d58] px-6 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#07130e] transition-colors hover:bg-white"
+                className="inline-flex h-12 items-center justify-center gap-3 bg-[#e7e3dc] border border-[#e7e3dc] px-6 text-[10px] font-semibold uppercase tracking-[0.22em] text-[#07130e] transition-colors hover:bg-[#07130e] hover:border-[#e7e3dc] hover:text-[#e7e3dc]"
               >
                 Book a Viewing
 
@@ -156,7 +156,7 @@ export default function VehicleActionFooterSection({
               className="flex items-center gap-3"
             >
               <Icon
-                className="h-5 w-5 shrink-0 text-[#a8754d]"
+                className="h-5 w-5 shrink-0 text-[#07130e]"
                 strokeWidth={1.4}
               />
 

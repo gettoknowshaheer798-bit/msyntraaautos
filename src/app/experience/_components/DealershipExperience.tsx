@@ -83,7 +83,7 @@ export default function DealershipExperience() {
             <div>
               <Link
                 href="#book"
-                className="inline-block text-xs md:text-sm tracking-[0.2em] text-[#0d1c17] font-semibold uppercase border-b border-[#0d1c17] pb-1 hover:text-[#9e6d48] hover:border-[#9e6d48] transition-colors"
+                className="inline-block text-xs md:text-sm tracking-[0.2em] text-[#0d1c17] font-semibold uppercase border-b border-[#0d1c17] pb-1 hover:text-[#07130e] hover:border-[#07130e] transition-colors"
               >
                 SCHEDULE A VIEWING &rarr;
               </Link>
@@ -133,7 +133,7 @@ export default function DealershipExperience() {
             <div>
               <Link
                 href="#book"
-                className="inline-block text-xs md:text-sm tracking-[0.2em] text-[#0d1c17] font-semibold uppercase border-b border-[#0d1c17] pb-1 hover:text-[#9e6d48] hover:border-[#9e6d48] transition-colors"
+                className="inline-block text-xs md:text-sm tracking-[0.2em] text-[#0d1c17] font-semibold uppercase border-b border-[#0d1c17] pb-1 hover:text-[#07130e] hover:border-[#07130e] transition-colors"
               >
                 BOOK A TEST DRIVE &rarr;
               </Link>
@@ -165,9 +165,9 @@ export default function DealershipExperience() {
 
             <div className="space-y-4 pt-4 border-t border-[#dcd5c9]">
               <div className="flex items-start gap-3">
-                <MapPin className="w-4 h-4 text-[#9e6d48] flex-shrink-0 mt-0.5" />
+                <MapPin className="w-4 h-4 text-[#07130e] flex-shrink-0 mt-0.5" />
 
-                <div className="text-sm md:text-base text-[#5d6863] font-light">
+                <div className="text-sm md:text-base text-[#07130e] font-light">
                   <span className="text-[#0d1c17] font-medium block">
                     MSYNTRA Automotive
                   </span>
@@ -176,7 +176,7 @@ export default function DealershipExperience() {
               </div>
 
               <div className="flex items-start gap-3">
-                <Clock className="w-4 h-4 text-[#9e6d48] flex-shrink-0 mt-0.5" />
+                <Clock className="w-4 h-4 text-[#07130e] flex-shrink-0 mt-0.5" />
 
                 <div className="text-sm md:text-base text-[#5d6863] font-light">
                   <span className="text-[#0d1c17] font-medium block">
@@ -240,7 +240,7 @@ export default function DealershipExperience() {
 
               <div className="space-y-4 pt-4 border-t border-[#0d1c17]/15">
                 <div className="flex items-start gap-3">
-                  <MapPin className="w-4 h-4 text-[#9e6d48] flex-shrink-0 mt-0.5" />
+                  <MapPin className="w-4 h-4 text-[#07130e] flex-shrink-0 mt-0.5" />
 
                   <div className="text-sm md:text-base text-[#5d6863] font-light">
                     <span className="text-[#0d1c17] font-medium block">
@@ -251,7 +251,7 @@ export default function DealershipExperience() {
                 </div>
 
                 <div className="flex items-start gap-3">
-                  <Clock className="w-4 h-4 text-[#9e6d48] flex-shrink-0 mt-0.5" />
+                  <Clock className="w-4 h-4 text-[#07130e] flex-shrink-0 mt-0.5" />
 
                   <div className="text-sm md:text-base text-[#5d6863] font-light">
                     <span className="text-[#0d1c17] font-medium block">
@@ -285,7 +285,7 @@ export default function DealershipExperience() {
               CONCIERGE SERVICES
             </h2>
 
-            <div className="w-10 h-[2px] bg-[#9e6d48] mb-6" />
+            <div className="w-10 h-[2px] bg-[#07130e] mb-6" />
 
             <p className="text-xs md:text-sm text-[#5d6863] font-light leading-relaxed mb-6 max-w-sm">
               From sourcing a specific model to arranging delivery, insurance,
@@ -295,7 +295,7 @@ export default function DealershipExperience() {
 
             <Link
               href="/contact"
-              className="inline-block text-[10px] tracking-[0.25em] text-[#9e6d48] font-semibold uppercase border-b border-[#9e6d48] pb-1 hover:text-[#0d1c17] hover:border-[#0d1c17] transition-colors"
+              className="inline-block text-[10px] tracking-[0.25em] text-[#07130e] font-semibold uppercase border-b border-[#07130e] pb-1 hover:text-[#0d1c17] hover:border-[#0d1c17] transition-colors"
             >
               LEARN MORE &rarr;
             </Link>
@@ -304,7 +304,7 @@ export default function DealershipExperience() {
           {/* Right: plain icon items, divided by thin vertical rules */}
           <div className="lg:col-span-7 grid grid-cols-2 sm:grid-cols-4 divide-x divide-[#dcd5c9]">
             <div className="flex flex-col items-center text-center px-3 md:px-4">
-              <UserCheck className="w-7 h-7 text-[#9e6d48] mb-4" strokeWidth={1.25} />
+              <UserCheck className="w-7 h-7 text-[#07130e] mb-4" strokeWidth={1.25} />
               <span className="text-xs text-[#0d1c17] font-light leading-snug">
                 Personalized
                 <br />
@@ -313,7 +313,7 @@ export default function DealershipExperience() {
             </div>
 
             <div className="flex flex-col items-center text-center px-3 md:px-4">
-              <Key className="w-7 h-7 text-[#9e6d48] mb-4" strokeWidth={1.25} />
+              <Key className="w-7 h-7 text-[#07130e] mb-4" strokeWidth={1.25} />
               <span className="text-xs text-[#0d1c17] font-light leading-snug">
                 Vehicle Sourcing
                 <br />& Custom Orders
@@ -321,7 +321,7 @@ export default function DealershipExperience() {
             </div>
 
             <div className="flex flex-col items-center text-center px-3 md:px-4">
-              <ShieldCheck className="w-7 h-7 text-[#9e6d48] mb-4" strokeWidth={1.25} />
+              <ShieldCheck className="w-7 h-7 text-[#07130e] mb-4" strokeWidth={1.25} />
               <span className="text-xs text-[#0d1c17] font-light leading-snug">
                 Financing &
                 <br />
@@ -330,7 +330,7 @@ export default function DealershipExperience() {
             </div>
 
             <div className="flex flex-col items-center text-center px-3 md:px-4">
-              <CalendarCheck className="w-7 h-7 text-[#9e6d48] mb-4" strokeWidth={1.25} />
+              <CalendarCheck className="w-7 h-7 text-[#07130e] mb-4" strokeWidth={1.25} />
               <span className="text-xs text-[#0d1c17] font-light leading-snug">
                 Delivery &
                 <br />
@@ -368,7 +368,7 @@ export default function DealershipExperience() {
             </h2>
 
             <div className="flex flex-col sm:flex-row gap-4">
-              <button className="px-8 py-4 bg-[#9e6d48] text-[#07130e] text-[10px] tracking-[0.25em] uppercase font-semibold hover:bg-[#e7e3dc] transition-all">
+              <button className="px-8 py-4 bg-[#07130e] text-[#07130e] text-[10px] tracking-[0.25em] uppercase font-semibold hover:bg-[#e7e3dc] transition-all">
                 SCHEDULE A VIEWING
               </button>
 
@@ -414,11 +414,11 @@ export default function DealershipExperience() {
               </h2>
 
               <div className="flex flex-col sm:flex-row gap-4">
-                <button className="px-8 py-4 bg-[#9e6d48] text-[#07130e] text-[10px] tracking-[0.25em] uppercase font-semibold hover:bg-[#e7e3dc] transition-all">
+                <button className="px-8 py-4 bg-[#07130e] text-[#e7e3dc] border border-[#e7e3dc] text-[10px] tracking-[0.25em] uppercase font-semibold hover:bg-[#e7e3dc] hover:text-[#07130e] hover:border-[#07130e] transition-all">
                   SCHEDULE A VIEWING
                 </button>
 
-                <button className="px-8 py-4 border border-[#122820] text-[#8a9992] hover:text-[#e7e3dc] text-[10px] tracking-[0.25em] uppercase font-light hover:bg-[#0e2119] transition-all">
+                <button className="px-8 py-4 bg-[#e7e3dc] text-[#07130e] border border-[#07130e] text-[10px] tracking-[0.25em] uppercase font-light hover:bg-[#07130e] hover:text-[#e7e3dc] hover:border-[#e7e3dc] transition-all">
                   CONTACT ADVISOR
                 </button>
               </div>
@@ -430,7 +430,7 @@ export default function DealershipExperience() {
         <div className="border-t border-[#122820] py-6 px-8 md:px-16 lg:px-24 bg-[#050e0b]">
           <div className="max-w-[1500px] mx-auto grid grid-cols-2 md:grid-cols-4 gap-6 text-center md:text-left">
             <div className="flex items-center justify-center md:justify-start gap-3">
-              <Sparkles className="w-4 h-4 text-[#9e6d48]" />
+              <Sparkles className="w-4 h-4 text-[#e7e3dc]" />
 
               <span className="text-[10px] tracking-[0.2em] text-[#8a9992] uppercase font-light">
                 PRIVATE EXPERIENCE
@@ -438,7 +438,7 @@ export default function DealershipExperience() {
             </div>
 
             <div className="flex items-center justify-center md:justify-start gap-3">
-              <User className="w-4 h-4 text-[#9e6d48]" />
+              <User className="w-4 h-4 text-[#e7e3dc]" />
 
               <span className="text-[10px] tracking-[0.2em] text-[#8a9992] uppercase font-light">
                 EXPERT ADVISORS
@@ -446,7 +446,7 @@ export default function DealershipExperience() {
             </div>
 
             <div className="flex items-center justify-center md:justify-start gap-3">
-              <Compass className="w-4 h-4 text-[#9e6d48]" />
+              <Compass className="w-4 h-4 text-[#e7e3dc]" />
 
               <span className="text-[10px] tracking-[0.2em] text-[#8a9992] uppercase font-light">
                 CURATED COLLECTION
@@ -454,7 +454,7 @@ export default function DealershipExperience() {
             </div>
 
             <div className="flex items-center justify-center md:justify-start gap-3">
-              <Handshake className="w-4 h-4 text-[#9e6d48]" />
+              <Handshake className="w-4 h-4 text-[#e7e3dc]" />
 
               <span className="text-[10px] tracking-[0.2em] text-[#8a9992] uppercase font-light">
                 TRUSTED PARTNERSHIP

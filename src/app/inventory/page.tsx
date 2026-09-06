@@ -349,7 +349,7 @@ export default function InventoryPage() {
      ============================================================ */
 
   return (
-    <main className="min-h-screen bg-[#f4f0eb] text-[#0d1c17] selection:bg-[#9e6d48] selection:text-white">
+    <main className="min-h-screen bg-[#f4f0eb] text-[#0d1c17] selection:bg-[#07130e] selection:text-white">
       {/* ============================================================
           HERO
           ============================================================ */}
@@ -377,7 +377,7 @@ export default function InventoryPage() {
               MSYNTRA
             </span>
 
-            <span className="mt-0.5 text-[7px] font-semibold uppercase tracking-[0.38em] text-[#9e6d48] sm:text-[8px]">
+            <span className="mt-0.5 text-[7px] font-semibold uppercase tracking-[0.38em] text-[#07130e] sm:text-[8px]">
               Automotive
             </span>
           </Link>
@@ -385,35 +385,35 @@ export default function InventoryPage() {
           <nav className="hidden items-center gap-8 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#0d1c17] lg:flex">
             <Link
               href="/inventory"
-              className="border-b border-[#9e6d48] pb-1 text-[#9e6d48]"
+              className="border-b border-[#07130e] pb-1 text-[#07130e]"
             >
               Inventory
             </Link>
 
             <Link
               href="/about"
-              className="transition-colors hover:text-[#9e6d48]"
+              className="transition-colors hover:text-[#07130e]"
             >
               Experience
             </Link>
 
             <Link
               href="/financing"
-              className="transition-colors hover:text-[#9e6d48]"
+              className="transition-colors hover:text-[#07130e]"
             >
               Financing
             </Link>
 
             <Link
               href="/about"
-              className="transition-colors hover:text-[#9e6d48]"
+              className="transition-colors hover:text-[#07130e]"
             >
               About
             </Link>
 
             <Link
               href="/contact"
-              className="transition-colors hover:text-[#9e6d48]"
+              className="transition-colors hover:text-[#07130e]"
             >
               Contact
             </Link>
@@ -421,7 +421,7 @@ export default function InventoryPage() {
 
           <Link
             href="/contact"
-            className="bg-[#0d1c17] px-5 py-2.5 text-[8px] font-semibold uppercase tracking-[0.25em] text-[#e7e3dc] transition-colors hover:bg-[#9e6d48] hover:text-[#0d1c17] sm:px-6 sm:text-[9px]"
+            className="bg-[#0d1c17] px-5 py-2.5 text-[8px] font-semibold uppercase tracking-[0.25em] text-[#e7e3dc] transition-colors hover:bg-[#07130e] hover:text-[#0d1c17] sm:px-6 sm:text-[9px]"
           >
             Inquire
           </Link>
@@ -450,7 +450,7 @@ export default function InventoryPage() {
             className="max-w-[650px]"
           >
             <div className="mb-5 flex items-center gap-3">
-              <span className="h-px w-7 bg-[#9e6d48]" />
+              <span className="h-px w-7 bg-[#07130e]" />
 
               <span className="-translate-x-4 whitespace-nowrap font-serif text-4xl font-light uppercase tracking-[-0.02em] text-[#0d1c17] sm:text-5xl md:text-6xl lg:text-7xl">
                 The Collection
@@ -474,7 +474,7 @@ export default function InventoryPage() {
                 uncompromising performance.
               </p>
 
-              <div className="border-l border-[#9e6d48]/40 pl-5">
+              <div className="border-l border-[#07130e]/40 pl-5">
                 <span className="block text-2xl font-light text-[#0d1c17] sm:text-3xl">
                   {loading ? "—" : vehicles.length}
                 </span>
@@ -489,10 +489,10 @@ export default function InventoryPage() {
 
         {/* Scroll Cue */}
 
-        <div className="absolute bottom-7 right-5 z-20 hidden items-center gap-3 text-[8px] font-semibold uppercase tracking-[0.25em] text-[#0d1c17] sm:flex md:right-12">
+        <div className="absolute bottom-7 right-5 z-20 hidden items-center gap-3 text-[8px] font-semibold uppercase tracking-[0.25em] text-[#07130e] sm:flex md:right-12">
           <span>Explore the collection</span>
 
-          <ArrowDown className="h-3.5 w-3.5 text-[#9e6d48]" />
+          <ArrowDown className="h-3.5 w-3.5 text-[#07130e]" />
         </div>
       </section>
 
@@ -526,7 +526,7 @@ export default function InventoryPage() {
                     {category}
 
                     <span
-                      className={`absolute bottom-0 left-0 h-[2px] bg-[#9e6d48] transition-all duration-300 ${
+                      className={`absolute bottom-0 left-0 h-[2px] bg-[#07130e] transition-all duration-300 ${
                         active ? "w-full" : "w-0"
                       }`}
                     />
@@ -558,7 +558,7 @@ export default function InventoryPage() {
                   ))}
                 </select>
 
-                <ChevronDown className="pointer-events-none absolute right-0 top-1/2 h-3 w-3 -translate-y-1/2 text-[#9e6d48]" />
+                <ChevronDown className="pointer-events-none absolute right-0 top-1/2 h-3 w-3 -translate-y-1/2 text-[#07130e]" />
               </div>
 
               <div className="h-5 w-px bg-[#d6d0c6]" />
@@ -574,14 +574,14 @@ export default function InventoryPage() {
                 }
                 className={`flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.2em] transition-colors ${
                   showFavoritesOnly
-                    ? "text-[#9e6d48]"
+                    ? "text-[#07130e]"
                     : "text-[#5d6863] hover:text-[#0d1c17]"
                 }`}
               >
                 <Heart
                   className={`h-3.5 w-3.5 ${
                     showFavoritesOnly
-                      ? "fill-[#9e6d48]"
+                      ? "fill-[#07130e]"
                       : ""
                   }`}
                 />
@@ -589,7 +589,7 @@ export default function InventoryPage() {
                 Favorites
 
                 {favorites.length > 0 && (
-                  <span className="text-[#9e6d48]">
+                  <span className="text-[#07130e]">
                     {favorites.length}
                   </span>
                 )}
@@ -618,7 +618,7 @@ export default function InventoryPage() {
                   </span>
 
                   <ChevronDown
-                    className={`h-3 w-3 text-[#9e6d48] transition-transform ${
+                    className={`h-3 w-3 text-[#07130e] transition-transform ${
                       sortOpen ? "rotate-180" : ""
                     }`}
                   />
@@ -657,7 +657,7 @@ export default function InventoryPage() {
                           {option.label}
 
                           {sortBy === option.value && (
-                            <Check className="h-3 w-3 text-[#9e6d48]" />
+                            <Check className="h-3 w-3 text-[#07130e]" />
                           )}
                         </button>
                       ))}
@@ -673,7 +673,7 @@ export default function InventoryPage() {
                   <button
                     type="button"
                     onClick={resetFilters}
-                    className="flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#9e6d48] transition-colors hover:text-[#0d1c17]"
+                    className="flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.2em] text-[#07130e] transition-colors hover:text-[#0d1c17]"
                   >
                     Reset
 
@@ -695,12 +695,12 @@ export default function InventoryPage() {
                 }
                 className="flex items-center gap-2 border border-[#d6d0c6] px-4 py-3 text-[8px] font-semibold uppercase tracking-[0.2em] text-[#0d1c17]"
               >
-                <SlidersHorizontal className="h-3.5 w-3.5 text-[#9e6d48]" />
+                <SlidersHorizontal className="h-3.5 w-3.5 text-[#07130e]" />
                 Filters
               </button>
 
               {hasActiveFilters && (
-                <span className="h-1.5 w-1.5 rounded-full bg-[#9e6d48]" />
+                <span className="h-1.5 w-1.5 rounded-full bg-[#07130e]" />
               )}
             </div>
 
@@ -724,7 +724,7 @@ export default function InventoryPage() {
               Sort
 
               <ChevronDown
-                className={`h-3 w-3 text-[#9e6d48] transition-transform ${
+                className={`h-3 w-3 text-[#07130e] transition-transform ${
                   sortOpen ? "rotate-180" : ""
                 }`}
               />
@@ -764,7 +764,7 @@ export default function InventoryPage() {
             >
               <div className="flex items-center justify-between border-b border-[#d6d0c6] px-6 py-5">
                 <div>
-                  <span className="text-[8px] font-semibold uppercase tracking-[0.3em] text-[#9e6d48]">
+                  <span className="text-[8px] font-semibold uppercase tracking-[0.3em] text-[#07130e]">
                     Refine
                   </span>
 
@@ -833,7 +833,7 @@ export default function InventoryPage() {
                       }
                       className={`flex w-full items-center justify-between border-b border-[#d6d0c6] py-3 text-left text-[9px] font-semibold uppercase tracking-[0.2em] ${
                         activeMake === "ALL"
-                          ? "text-[#9e6d48]"
+                          ? "text-[#07130e]"
                           : "text-[#0d1c17]"
                       }`}
                     >
@@ -853,7 +853,7 @@ export default function InventoryPage() {
                         }
                         className={`flex w-full items-center justify-between border-b border-[#d6d0c6] py-3 text-left text-[9px] font-semibold uppercase tracking-[0.2em] ${
                           activeMake === make
-                            ? "text-[#9e6d48]"
+                            ? "text-[#07130e]"
                             : "text-[#0d1c17]"
                         }`}
                       >
@@ -884,7 +884,7 @@ export default function InventoryPage() {
                         }
                         className={`flex w-full items-center justify-between border-b border-[#d6d0c6] py-3 text-left text-[9px] font-semibold uppercase tracking-[0.15em] ${
                           sortBy === option.value
-                            ? "text-[#9e6d48]"
+                            ? "text-[#07130e]"
                             : "text-[#0d1c17]"
                         }`}
                       >
@@ -917,8 +917,8 @@ export default function InventoryPage() {
                     <Heart
                       className={`h-3.5 w-3.5 ${
                         showFavoritesOnly
-                          ? "fill-[#9e6d48] text-[#9e6d48]"
-                          : "text-[#9e6d48]"
+                          ? "fill-[#07130e] text-[#07130e]"
+                          : "text-[#07130e]"
                       }`}
                     />
 
@@ -957,7 +957,7 @@ export default function InventoryPage() {
       {loading && (
         <section className="mx-auto max-w-[1500px] px-5 py-20 sm:px-8 md:px-12 lg:px-16 xl:px-20">
           <div className="flex items-center gap-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#7a7e7b]">
-            <span className="h-px w-8 bg-[#9e6d48]" />
+            <span className="h-px w-8 bg-[#07130e]" />
             Loading the collection...
           </div>
         </section>
@@ -965,7 +965,7 @@ export default function InventoryPage() {
 
       {!loading && error && (
         <section className="mx-auto max-w-[1500px] px-5 py-24 text-center sm:px-8 md:px-12 lg:px-16 xl:px-20">
-          <span className="mb-4 block text-[9px] font-semibold uppercase tracking-[0.3em] text-[#9e6d48]">
+          <span className="mb-4 block text-[9px] font-semibold uppercase tracking-[0.3em] text-[#07130e]">
             Collection unavailable
           </span>
 
@@ -980,7 +980,7 @@ export default function InventoryPage() {
           <button
             type="button"
             onClick={() => window.location.reload()}
-            className="mt-8 inline-flex items-center gap-3 bg-[#0d1c17] px-7 py-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#e7e3dc] transition-colors hover:bg-[#9e6d48] hover:text-[#0d1c17]"
+            className="mt-8 inline-flex items-center gap-3 bg-[#0d1c17] px-7 py-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#e7e3dc] transition-colors hover:bg-[#07130e] hover:text-[#0d1c17]"
           >
             Try Again
 
@@ -998,7 +998,7 @@ export default function InventoryPage() {
           <section className="mx-auto max-w-[1500px] px-5 pb-7 pt-12 sm:px-8 md:px-12 md:pt-16 lg:px-16 xl:px-20">
             <div className="flex items-end justify-between gap-6">
               <div>
-                <span className="mb-2 block text-[8px] font-semibold uppercase tracking-[0.3em] text-[#9e6d48] sm:text-[9px]">
+                <span className="mb-2 block text-[8px] font-semibold uppercase tracking-[0.3em] text-[#07130e] sm:text-[9px]">
                   Available Now
                 </span>
 
@@ -1175,7 +1175,7 @@ export default function InventoryPage() {
                               {featuredVehicles.includes(
                                 car.id
                               ) && (
-                                <span className="bg-[#9e6d48]/90 px-2.5 py-1.5 text-[7px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm sm:text-[8px]">
+                                <span className="bg-[#07130e]/90 px-2.5 py-1.5 text-[7px] font-semibold uppercase tracking-[0.2em] text-white backdrop-blur-sm sm:text-[8px]">
                                   Featured
                                 </span>
                               )}
@@ -1287,7 +1287,7 @@ export default function InventoryPage() {
                 }}
                 className="flex min-h-[420px] flex-col items-center justify-center border border-[#d6d0c6] px-6 text-center"
               >
-                <span className="mb-4 text-[9px] font-semibold uppercase tracking-[0.3em] text-[#9e6d48]">
+                <span className="mb-4 text-[9px] font-semibold uppercase tracking-[0.3em] text-[#07130e]">
                   No matching vehicles
                 </span>
 
@@ -1304,7 +1304,7 @@ export default function InventoryPage() {
                 <button
                   type="button"
                   onClick={resetFilters}
-                  className="mt-8 inline-flex items-center gap-3 bg-[#0d1c17] px-7 py-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#e7e3dc] transition-colors hover:bg-[#9e6d48] hover:text-[#0d1c17]"
+                  className="mt-8 inline-flex items-center gap-3 bg-[#0d1c17] px-7 py-4 text-[9px] font-semibold uppercase tracking-[0.25em] text-[#e7e3dc] transition-colors hover:bg-[#07130e] hover:text-[#0d1c17]"
                 >
                   Reset Selection
 
@@ -1327,7 +1327,7 @@ export default function InventoryPage() {
                   <button
                     type="button"
                     onClick={resetFilters}
-                    className="flex items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.25em] text-[#9e6d48] transition-colors hover:text-[#0d1c17]"
+                    className="flex items-center gap-2 text-[8px] font-semibold uppercase tracking-[0.25em] text-[#07130e] transition-colors hover:text-[#0d1c17]"
                   >
                     Clear Selection
 
@@ -1347,7 +1347,7 @@ export default function InventoryPage() {
       <section className="relative overflow-hidden bg-[#07130e] px-5 py-20 text-[#e7e3dc] sm:px-8 md:px-12 md:py-24 lg:px-16 xl:px-20">
         <div className="mx-auto flex max-w-[1500px] flex-col justify-between gap-10 lg:flex-row lg:items-end">
           <div className="max-w-3xl">
-            <span className="mb-4 block text-[9px] font-semibold uppercase tracking-[0.3em] text-[#b07d58]">
+            <span className="mb-4 block text-[9px] font-semibold uppercase tracking-[0.3em] text-[#e7e3dc]">
               Can't find what you're looking for?
             </span>
 

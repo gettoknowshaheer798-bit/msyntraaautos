@@ -47,7 +47,7 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+            <p className="text-[10px] tracking-[0.28em] text-[#07130e]">
               OVERVIEW
             </p>
 
@@ -63,7 +63,7 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
 
             <Link
               href="#gallery"
-              className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#a8754d] transition-colors hover:text-[#102019]"
+              className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#07130e] transition-colors hover:text-[#102019]"
             >
               View Gallery →
             </Link>
@@ -76,14 +76,14 @@ export default function VehicleDetailsSection({ vehicle }: Props) {
             whileInView="visible"
             viewport={{ once: true, amount: 0.3 }}
           >
-            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+            <p className="text-[10px] tracking-[0.28em] text-[#07130e]">
               SPECIFICATIONS
             </p>
 
             <div className="mt-6 grid grid-cols-1 gap-x-10 gap-y-6 sm:grid-cols-2">
               {specRows.map(({ label, value, icon: Icon }) => (
                 <div key={label} className="flex items-start gap-3">
-                  <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#a8754d]" strokeWidth={1.4} />
+                  <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#07130e]" strokeWidth={1.4} />
                   <div>
                     <p className="text-[10px] tracking-[0.2em] text-[#77766f]">
                       {label}

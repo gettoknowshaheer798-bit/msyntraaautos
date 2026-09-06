@@ -15,8 +15,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 
-import { createClient } from "@/utils/supabase/client";
 import type { Vehicle } from "@/types/vehicle";
+import { createClient } from "@/utils/supabase/client";
 
 type Category =
   | "ALL"
@@ -416,7 +416,7 @@ export default function InventoryPage() {
       <section className="relative min-h-[620px] overflow-hidden bg-[#dcd7ce] sm:min-h-[680px] lg:min-h-[720px]">
         <div className="absolute inset-0">
           <Image
-            src="/images/vehicles/BMW-Collection-MainImage.png"
+            src="/images/vehicles/Collection-Hero.png"
             alt="MSYNTRA automotive collection"
             fill
             priority
@@ -424,9 +424,6 @@ export default function InventoryPage() {
             className="object-cover object-[68%_center] lg:object-right"
           />
 
-          <div className="absolute inset-0 bg-gradient-to-r from-[#f4f0eb] via-[#f4f0eb]/85 to-transparent md:w-[72%]" />
-
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0d1c17]/10 via-transparent to-[#0d1c17]/5" />
         </div>
 
         {/* Header */}
@@ -517,27 +514,23 @@ export default function InventoryPage() {
             <div className="mb-5 flex items-center gap-3">
               <span className="h-px w-7 bg-[#9e6d48]" />
 
-              <span className="text-[9px] font-semibold uppercase tracking-[0.3em] text-[#9e6d48] sm:text-[10px]">
+              <span className="-translate-x-10 whitespace-nowrap font-serif text-4xl font-light uppercase tracking-[-0.02em] text-[#0d1c17] sm:text-5xl md:text-6xl lg:text-7xl">
                 The Collection
               </span>
             </div>
 
             <h1
-              className="font-serif text-[52px] font-light uppercase leading-[0.86] tracking-[-0.035em] text-[#0d1c17] sm:text-6xl md:text-7xl lg:text-[92px]"
+              className="whitespace-nowrap font-serif text-base font-light uppercase leading-none tracking-[-0.02em] text-[#0d1c17] sm:text-lg md:text-xl lg:text-2xl"
               style={{
                 fontVariationSettings:
                   '"SOFT" 100, "opsz" 144',
               }}
             >
-              EVERY
-              <br />
-              VEHICLE.
-              <br />
-              ONE DESTINATION.
+              EVERY VEHICLE. ONE DESTINATION.
             </h1>
 
             <div className="mt-7 flex flex-col gap-6 sm:flex-row sm:items-end sm:gap-10">
-              <p className="max-w-[300px] text-xs font-light leading-[1.7] tracking-wide text-[#5d6863] md:text-sm">
+              <p className="max-w-[300px] text-xs font-light leading-[1.7] tracking-wide text-[#0d1c17] md:text-sm">
                 A considered collection of
                 exceptional automobiles, from
                 everyday capability to
@@ -549,7 +542,7 @@ export default function InventoryPage() {
                   {loading ? "—" : vehicles.length}
                 </span>
 
-                <span className="text-[8px] font-semibold uppercase tracking-[0.25em] text-[#5d6863]">
+                <span className="text-[8px] font-semibold uppercase tracking-[0.25em] text-[#0d1c17]">
                   Vehicles
                 </span>
               </div>

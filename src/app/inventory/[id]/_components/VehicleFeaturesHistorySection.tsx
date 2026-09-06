@@ -1,39 +1,63 @@
 "use client";
 
-import Image from "next/image";
+import type { Vehicle } from "@/types/vehicle";
+
 import { motion, useReducedMotion, type Variants } from "framer-motion";
 import {
-  ArrowUpRight,
+  Camera,
+  Car,
   Check,
-  ShieldCheck,
+  Cog,
+  MonitorSmartphone,
+  SlidersHorizontal,
+  Volume2,
 } from "lucide-react";
-import type { Vehicle } from "@/types/vehicle";
+import Image from "next/image";
+import Link from "next/link";
 
 interface Props {
   vehicle: Vehicle;
 }
+
+const FEATURE_ICONS = [
+  Cog,
+  Volume2,
+  Volume2,
+  SlidersHorizontal,
+  MonitorSmartphone,
+  Camera,
+];
+
+const DEFAULT_INSPECTION_ITEMS: string[] = [
+  "Multi-Point Inspection Completed",
+  "Engine & Transmission Checked",
+  "Brake System Verified",
+  "Tires & Suspension Inspected",
+  "Passed All Quality Standards",
+];
 
 export default function VehicleFeaturesHistorySection({
   vehicle,
 }: Props) {
   const shouldReduceMotion = useReducedMotion();
 
-  const detailImage =
-    vehicle.galleryImages?.[3] ??
-    vehicle.galleryImages?.[2] ??
+  const inspectionImage =
+    vehicle.galleryImages?.[4] ??
     vehicle.actionImage ??
     vehicle.heroImage;
+
+  const finance = vehicle.financingEstimate;
 
   const reveal: Variants = {
     hidden: {
       opacity: 0,
-      y: shouldReduceMotion ? 0 : 30,
+      y: shouldReduceMotion ? 0 : 16,
     },
     visible: {
       opacity: 1,
       y: 0,
       transition: {
-        duration: 0.8,
+        duration: 0.6,
         ease: "easeOut",
       },
     },
@@ -41,264 +65,199 @@ export default function VehicleFeaturesHistorySection({
 
   return (
     <section className="bg-[#f4f0eb] text-[#102019]">
-      {/* =====================================================
-          CHAPTER INTRO
-      ====================================================== */}
+      <div className="mx-auto max-w-[1400px] px-6 py-16 sm:px-10 lg:px-14 lg:py-20">
+        {/* =================================================
+            FEATURES + VEHICLE HISTORY
+        ================================================== */}
 
-      <div className="mx-auto max-w-[1600px] px-5 pb-24 sm:px-8 lg:px-12 lg:pb-32">
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]"
-        >
-          <div>
-            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
-              02 / THE DETAILS
-            </p>
-          </div>
-
-          <div>
-            <h2 className="max-w-4xl text-5xl font-light leading-[0.94] tracking-[-0.055em] sm:text-6xl lg:text-8xl">
-              Nothing
-              <br />
-              unnecessary.
-              <br />
-              <span className="text-[#77766f]">
-                Nothing overlooked.
-              </span>
-            </h2>
-
-            <p className="mt-10 max-w-2xl text-base leading-8 text-[#62645f] sm:text-lg">
-              Every vehicle entering the MSyntra collection is considered for
-              specification, condition, provenance and overall suitability.
-            </p>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* =====================================================
-          CINEMATIC DETAIL IMAGE
-      ====================================================== */}
-
-      <div className="relative mx-auto max-w-[1800px] px-0 sm:px-5 lg:px-8">
-        <motion.div
-          initial={{
-            opacity: 0,
-            scale: shouldReduceMotion ? 1 : 0.985,
-          }}
-          whileInView={{
-            opacity: 1,
-            scale: 1,
-          }}
-          viewport={{
-            once: true,
-            amount: 0.15,
-          }}
-          transition={{
-            duration: 1,
-            ease: "easeOut",
-          }}
-          className="relative aspect-[4/3] overflow-hidden bg-[#ddd7cd] sm:aspect-[16/8]"
-        >
-          <Image
-            src={detailImage}
-            alt={`${vehicle.make} ${vehicle.model} detail`}
-            fill
-            sizes="100vw"
-            className="object-cover"
-          />
-
-          {/* Image contrast */}
-
-          <div className="absolute inset-0 bg-gradient-to-r from-[#0d1915]/60 via-transparent to-transparent" />
-
-          <div className="absolute inset-0 bg-gradient-to-t from-[#0d1915]/40 via-transparent to-transparent" />
-
-          {/* Editorial copy, positioned away from the bottom edge */}
-
-          <div className="absolute left-5 top-1/2 max-w-xl -translate-y-1/2 sm:left-10 lg:left-14">
-            <p className="text-[10px] tracking-[0.3em] text-white/60">
-              INSPECTED. CONSIDERED. VERIFIED.
-            </p>
-
-            <p className="mt-4 text-3xl font-light leading-[0.95] tracking-[-0.045em] text-white sm:text-5xl lg:text-6xl">
-              Considered from
-              <br />
-              every angle.
-            </p>
-          </div>
-
-          {/* Image index */}
-
-          <div className="absolute right-5 top-5 sm:right-10 sm:top-10 lg:right-14">
-            <span className="text-[10px] tracking-[0.2em] text-white/50">
-              MS / 02
-            </span>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* =====================================================
-          EQUIPMENT + PROVENANCE
-      ====================================================== */}
-
-      <div className="mx-auto max-w-[1600px] px-5 py-24 sm:px-8 lg:px-12 lg:py-36">
-        <div className="grid gap-20 lg:grid-cols-2 lg:gap-28">
-          {/* =================================================
-              SELECTED EQUIPMENT
-          ================================================== */}
+        <div className="grid gap-14 border-b border-[#102019]/10 pb-16 lg:grid-cols-2 lg:gap-20">
+          {/* FEATURES */}
 
           <motion.div
             variants={reveal}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
+            viewport={{ once: true, amount: 0.2 }}
           >
-            <div className="flex items-end justify-between border-b border-[#102019]/15 pb-5">
-              <div>
-                <p className="text-[10px] tracking-[0.25em] text-[#a8754d]">
-                  SELECTED EQUIPMENT
-                </p>
+            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+              FEATURES
+            </p>
 
-                <h3 className="mt-3 text-3xl font-light tracking-[-0.04em] sm:text-4xl">
-                  What it carries.
-                </h3>
-              </div>
+            <div className="mt-8 grid grid-cols-3 gap-x-6 gap-y-8">
+              {(vehicle.features ?? [])
+                .slice(0, 6)
+                .map((feature: string, index: number) => {
+                  const Icon =
+                    FEATURE_ICONS[index % FEATURE_ICONS.length];
 
-              <span className="text-[10px] tracking-[0.2em] text-[#77766f]">
-                {(vehicle.features?.length ?? 0)
-                  .toString()
-                  .padStart(2, "0")}{" "}
-                ITEMS
-              </span>
-            </div>
+                  return (
+                    <div key={feature} className="text-center">
+                      <div className="mx-auto flex h-11 w-11 items-center justify-center rounded-full border border-[#102019]/12">
+                        <Icon
+                          className="h-5 w-5 text-[#102019]/70"
+                          strokeWidth={1.3}
+                        />
+                      </div>
 
-            <div>
-              {(vehicle.features ?? []).slice(0, 6).map((feature, index) => (
-                <div
-                  key={feature}
-                  className="group flex items-start gap-5 border-b border-[#102019]/10 py-6"
-                >
-                  <span className="w-5 shrink-0 pt-1 text-[10px] tracking-[0.15em] text-[#a8754d]">
-                    {(index + 1).toString().padStart(2, "0")}
-                  </span>
-
-                  <p className="flex-1 text-sm leading-6 text-[#303530]">
-                    {feature}
-                  </p>
-
-                  <ArrowUpRight
-                    size={15}
-                    strokeWidth={1.4}
-                    className="opacity-30 transition-all duration-300 group-hover:-translate-y-1 group-hover:translate-x-1 group-hover:opacity-100"
-                  />
-                </div>
-              ))}
+                      <p className="mt-3 text-xs leading-5 text-[#4f514d]">
+                        {feature}
+                      </p>
+                    </div>
+                  );
+                })}
             </div>
           </motion.div>
 
-          {/* =================================================
-              PROVENANCE
-          ================================================== */}
+          {/* VEHICLE HISTORY */}
 
           <motion.div
             variants={reveal}
             initial="hidden"
             whileInView="visible"
-            viewport={{ once: true, amount: 0.15 }}
+            viewport={{ once: true, amount: 0.2 }}
+            className="relative text-left lg:ml-80 xl:ml-100"
           >
-            {/* Header */}
+            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+              VEHICLE HISTORY
+            </p>
 
-            <div className="flex items-end justify-between border-b border-[#102019]/15 pb-5">
-              <div>
-                <p className="text-[10px] tracking-[0.25em] text-[#a8754d]">
-                  PROVENANCE
-                </p>
-
-                <h3 className="mt-3 text-3xl font-light tracking-[-0.04em] sm:text-4xl">
-                  Vehicle history.
-                </h3>
-              </div>
-
-              <ShieldCheck
-                size={21}
-                strokeWidth={1.2}
-              />
-            </div>
-
-            {/* Compact verification statement */}
-
-            <div className="flex items-center gap-5 border-b border-[#102019]/10 py-7">
-              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-full border border-[#a8754d]/50">
-                <ShieldCheck
-                  size={21}
-                  strokeWidth={1.2}
-                  className="text-[#a8754d]"
-                />
-              </div>
-
-              <div>
-                <p className="text-[9px] tracking-[0.25em] text-[#77766f]">
-                  MSYNTRA STANDARD
-                </p>
-
-                <p className="mt-1 text-base font-medium">
-                  Quality Assured
-                </p>
-              </div>
-            </div>
-
-            {/* History checklist */}
-
-            <div>
-              {(vehicle.historyChecklist ?? []).map((item, index) => (
-                <div
-                  key={item}
-                  className="flex items-center gap-5 border-b border-[#102019]/10 py-5"
-                >
-                  <span className="w-5 shrink-0 text-[10px] tracking-[0.15em] text-[#77766f]">
-                    {(index + 1).toString().padStart(2, "0")}
-                  </span>
-
-                  <p className="flex-1 text-sm leading-6 text-[#303530]">
-                    {item}
-                  </p>
-
-                  <div className="flex h-6 w-6 shrink-0 items-center justify-center rounded-full border border-[#102019]/15">
+            <div className="mt-6 space-y-4">
+              {(vehicle.historyChecklist ?? []).map(
+                (item: string) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-3"
+                  >
                     <Check
-                      size={12}
-                      strokeWidth={1.7}
+                      className="h-4 w-4 shrink-0 text-[#a8754d]"
+                      strokeWidth={2}
                     />
+
+                    <span className="text-sm text-[#303530]">
+                      {item}
+                    </span>
                   </div>
-                </div>
-              ))}
+                )
+              )}
             </div>
           </motion.div>
         </div>
 
         {/* =================================================
-            QUALITY ASSURANCE
+            INSPECTION / FINANCING / TRADE-IN
         ================================================== */}
 
         <motion.div
           variants={reveal}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, amount: 0.2 }}
-          className="mt-28 border-t border-[#102019]/15 pt-8 lg:mt-40"
+          viewport={{ once: true, amount: 0.15 }}
+          className="grid gap-10 pt-16 lg:grid-cols-[1fr_1.1fr_0.8fr] lg:gap-8"
         >
-          <div className="grid gap-8 lg:grid-cols-[0.8fr_1.2fr]">
-            <p className="text-[10px] tracking-[0.25em] text-[#a8754d]">
-              MSYNTRA QUALITY ASSURANCE
+          {/* INSPECTION REPORT */}
+
+          <div>
+            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+              INSPECTION REPORT
             </p>
 
-            <p className="max-w-2xl text-lg font-light leading-8 text-[#4f514d] sm:text-2xl">
-              Vehicle information and condition are reviewed as part of our
-              collection process. We believe transparency should begin before
-              the first conversation.
-            </p>
+            <div className="mt-5 space-y-3">
+              {DEFAULT_INSPECTION_ITEMS.map(
+                (item: string) => (
+                  <div
+                    key={item}
+                    className="flex items-center gap-3"
+                  >
+                    <Check
+                      className="h-4 w-4 shrink-0 text-[#a8754d]"
+                      strokeWidth={2}
+                    />
+
+                    <span className="text-sm text-[#303530]">
+                      {item}
+                    </span>
+                  </div>
+                )
+              )}
+            </div>
+
+            <Link
+              href="/contact"
+              className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#a8754d] transition-colors hover:text-[#102019]"
+            >
+              View Full Inspection Report →
+            </Link>
+          </div>
+
+          {/* INSPECTION IMAGE */}
+
+          <div className="relative aspect-[4/3] overflow-hidden rounded-sm bg-[#ddd7cd] lg:aspect-auto">
+            <Image
+              src={inspectionImage}
+              alt={`${vehicle.make} ${vehicle.model} inspection detail`}
+              fill
+              className="object-cover"
+              sizes="(max-width: 1024px) 100vw, 33vw"
+            />
+          </div>
+
+          {/* FINANCING + TRADE-IN */}
+
+          <div className="space-y-8">
+            {/* FINANCING */}
+
+            <div>
+              <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+                FINANCING ESTIMATE
+              </p>
+
+              <p className="mt-3 text-3xl font-light tracking-[-0.03em]">
+                {finance?.monthly ?? "—"}
+
+                <span className="ml-1 text-xs font-normal text-[#77766f]">
+                  /mo*
+                </span>
+              </p>
+
+              <p className="mt-1 text-xs text-[#77766f]">
+                {finance?.term ?? "60 months"} &nbsp;|&nbsp;{" "}
+                {finance?.apr ?? "APR varies"}
+              </p>
+
+              <Link
+                href="/financing"
+                className="mt-4 inline-flex items-center gap-2 border border-[#102019]/15 px-4 py-2.5 text-[9px] uppercase tracking-[0.2em] text-[#102019] transition-colors hover:border-[#a8754d] hover:text-[#a8754d]"
+              >
+                Calculate Your Payment →
+              </Link>
+            </div>
+
+            {/* TRADE-IN */}
+
+            <div className="border-t border-[#102019]/10 pt-6">
+              <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+                TRADE-IN VALUE
+              </p>
+
+              <div className="mt-3 flex items-start gap-3">
+                <Car
+                  className="h-5 w-5 shrink-0 text-[#a8754d]"
+                  strokeWidth={1.3}
+                />
+
+                <p className="text-sm leading-6 text-[#4f514d]">
+                  Get an instant estimate for your current
+                  vehicle.
+                </p>
+              </div>
+
+              <Link
+                href="/trade-in"
+                className="mt-4 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#a8754d] transition-colors hover:text-[#102019]"
+              >
+                Value My Trade →
+              </Link>
+            </div>
           </div>
         </motion.div>
       </div>

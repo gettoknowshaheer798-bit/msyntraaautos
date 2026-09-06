@@ -2,521 +2,97 @@
 
 import type { Vehicle } from "@/types/vehicle";
 
-import {
-  motion,
-  useReducedMotion,
-  useScroll,
-  useTransform,
-  type Variants,
-} from "framer-motion";
-
-import Image from "next/image";
-import { useRef } from "react";
+import { motion, useReducedMotion, type Variants } from "framer-motion";
+import { Cog, Disc3, Fuel, Gauge, Settings2, Waves } from "lucide-react";
+import Link from "next/link";
 
 interface Props {
   vehicle: Vehicle;
 }
 
-export default function VehicleDetailsSection({
-  vehicle,
-}: Props) {
+export default function VehicleDetailsSection({ vehicle }: Props) {
   const shouldReduceMotion = useReducedMotion();
-
-  /*
-   * Build a unique image collection from the vehicle.
-   *
-   * The gallery itself only uses galleryImages.
-   * Hero/action/thumbnail are used as fallbacks elsewhere.
-   */
-  const gallery = Array.from(
-    new Set(
-      [
-        vehicle.heroImage,
-        ...(vehicle.galleryImages ?? []),
-        vehicle.actionImage,
-        vehicle.thumbnail,
-      ].filter(Boolean)
-    )
-  );
-
-  const cinematicImage =
-    gallery[1] ?? gallery[0] ?? vehicle.heroImage;
-
-  const detailImage =
-    gallery[2] ?? gallery[0] ?? vehicle.heroImage;
-
-  const galleryImages = Array.from(
-    new Set(
-      (vehicle.galleryImages ?? []).filter(Boolean)
-    )
-  );
-
-  const imageRef =
-    useRef<HTMLDivElement>(null);
-
-  const {
-    scrollYProgress,
-  } = useScroll({
-    target: imageRef,
-    offset: ["start end", "end start"],
-  });
-
-  const imageY = useTransform(
-    scrollYProgress,
-    [0, 1],
-    shouldReduceMotion
-      ? ["0%", "0%"]
-      : ["-8%", "8%"]
-  );
+  const specs = vehicle.specs;
 
   const reveal: Variants = {
-    hidden: {
-      opacity: 0,
-      y: shouldReduceMotion ? 0 : 30,
-    },
-
-    visible: {
-      opacity: 1,
-      y: 0,
-
-      transition: {
-        duration: 0.8,
-        ease: "easeOut",
-      },
-    },
+    hidden: { opacity: 0, y: shouldReduceMotion ? 0 : 16 },
+    visible: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
   };
 
-  const specs = vehicle.specs;
+  const specRows = [
+    { label: "ENGINE", value: specs?.engine ?? vehicle.engineSpec, icon: Cog },
+    { label: "POWER", value: specs?.power ?? vehicle.powerSpec, icon: Gauge },
+    { label: "TORQUE", value: specs?.torque ?? "See specifications", icon: Waves },
+    {
+      label: "DRIVETRAIN",
+      value: specs?.drivetrain ?? "See specifications",
+      icon: Disc3,
+    },
+    {
+      label: "TRANSMISSION",
+      value: specs?.transmission ?? "See specifications",
+      icon: Settings2,
+    },
+    { label: "FUEL TYPE", value: specs?.fuelType ?? "Gasoline", icon: Fuel },
+  ];
 
   return (
     <section className="bg-[#f4f0eb] text-[#102019]">
-      {/* =====================================================
-          01 / THE MACHINE
-      ====================================================== */}
-
-      <div className="mx-auto max-w-[1600px] px-5 py-24 sm:px-8 lg:px-12 lg:py-36">
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{
-            once: true,
-            amount: 0.2,
-          }}
-          className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]"
-        >
-          <div>
-            <p className="text-[10px] font-medium tracking-[0.28em] text-[#a8754d]">
-              01 / THE MACHINE
+      <div className="mx-auto max-w-[1400px] px-6 py-16 sm:px-10 lg:px-14 lg:py-20">
+        <div className="grid gap-12 lg:grid-cols-2 lg:gap-16">
+          {/* OVERVIEW */}
+          <motion.div
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
+          >
+            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+              OVERVIEW
             </p>
-          </div>
 
-          <div>
-            <h2 className="max-w-4xl text-5xl font-light leading-[0.94] tracking-[-0.055em] sm:text-6xl lg:text-8xl">
-              Built for the
+            <h2 className="mt-4 max-w-md text-4xl font-light leading-[1.05] tracking-[-0.03em] sm:text-5xl">
+              Power. Presence.
               <br />
-              <span className="text-[#77766f]">
-                way forward.
-              </span>
+              Perfected.
             </h2>
 
-            <p className="mt-10 max-w-2xl text-base leading-8 text-[#62645f] sm:text-lg">
+            <p className="mt-6 max-w-md text-sm leading-7 text-[#62645f]">
               {vehicle.description}
             </p>
-          </div>
-        </motion.div>
 
-        {/* POWER STATEMENT */}
-
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{
-            once: true,
-            amount: 0.2,
-          }}
-          className="mt-28 border-y border-[#102019]/15 py-10 lg:mt-40 lg:py-14"
-        >
-          <div className="grid gap-10 lg:grid-cols-3 lg:items-end">
-            <div>
-              <p className="text-[10px] tracking-[0.25em] text-[#77766f]">
-                ENGINE OUTPUT
-              </p>
-
-              <p className="mt-3 text-7xl font-light tracking-[-0.07em] sm:text-8xl">
-                {vehicle.powerSpec.replace(
-                  /\D/g,
-                  ""
-                )}
-              </p>
-
-              <p className="mt-1 text-xs tracking-[0.22em] text-[#77766f]">
-                HORSEPOWER
-              </p>
-            </div>
-
-            <div>
-              <p className="text-[10px] tracking-[0.25em] text-[#77766f]">
-                POWERTRAIN
-              </p>
-
-              <p className="mt-4 max-w-md text-xl font-light leading-7 sm:text-2xl">
-                {vehicle.engineSpec}
-              </p>
-            </div>
-
-            <div className="lg:text-right">
-              <p className="text-[10px] tracking-[0.25em] text-[#77766f]">
-                DRIVE
-              </p>
-
-              <p className="mt-4 text-xl font-light sm:text-2xl">
-                {specs?.drivetrain ??
-                  "See specifications"}
-              </p>
-            </div>
-          </div>
-        </motion.div>
-      </div>
-
-      {/* =====================================================
-          CINEMATIC IMAGE
-      ====================================================== */}
-
-      <div
-        ref={imageRef}
-        className="relative h-[65vh] min-h-[500px] overflow-hidden bg-[#102019] sm:h-[75vh]"
-      >
-        <motion.div
-          style={{
-            y: imageY,
-          }}
-          className="absolute inset-x-0 -top-[8%] h-[116%]"
-        >
-          <Image
-            src={cinematicImage}
-            alt={`${vehicle.make} ${vehicle.model}`}
-            fill
-            sizes="100vw"
-            className="object-cover"
-            priority={false}
-          />
-        </motion.div>
-
-        <div className="absolute inset-0 bg-gradient-to-t from-[#0d1915]/75 via-transparent to-transparent" />
-
-        <div className="absolute bottom-8 left-5 right-5 sm:bottom-12 sm:left-8 sm:right-8 lg:left-12">
-          <p className="text-[10px] tracking-[0.28em] text-white/60">
-            MSYNTRA AUTOMOTIVE
-          </p>
-
-          <p className="mt-3 max-w-2xl text-3xl font-light leading-tight tracking-[-0.035em] text-white sm:text-5xl lg:text-6xl">
-            Every number
-            <br />
-            has a purpose.
-          </p>
-        </div>
-      </div>
-
-      {/* =====================================================
-          TECHNICAL DATA
-      ====================================================== */}
-
-      <div className="mx-auto max-w-[1600px] px-5 py-24 sm:px-8 lg:px-12 lg:py-36">
-        <motion.div
-          variants={reveal}
-          initial="hidden"
-          whileInView="visible"
-          viewport={{
-            once: true,
-            amount: 0.2,
-          }}
-          className="grid gap-12 lg:grid-cols-[0.8fr_1.2fr]"
-        >
-          <div>
-            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
-              TECHNICAL DATA
-            </p>
-
-            <h3 className="mt-5 text-4xl font-light tracking-[-0.045em] sm:text-5xl">
-              The numbers
-              <br />
-              behind it.
-            </h3>
-          </div>
-
-          <div className="border-t border-[#102019]/15">
-            {[
-              [
-                "ENGINE",
-                specs?.engine ??
-                  vehicle.engineSpec,
-              ],
-              [
-                "POWER",
-                specs?.power ??
-                  vehicle.powerSpec,
-              ],
-              [
-                "TORQUE",
-                specs?.torque ??
-                  "See specifications",
-              ],
-              [
-                "DRIVETRAIN",
-                specs?.drivetrain ??
-                  "See specifications",
-              ],
-              [
-                "TRANSMISSION",
-                specs?.transmission ??
-                  "See specifications",
-              ],
-              [
-                "FUEL / ENERGY",
-                specs?.fuelType ??
-                  "See specifications",
-              ],
-            ].map(
-              ([label, value], index) => (
-                <div
-                  key={label}
-                  className={`grid grid-cols-[0.7fr_1.3fr] gap-6 py-6 ${
-                    index !== 5
-                      ? "border-b border-[#102019]/15"
-                      : ""
-                  }`}
-                >
-                  <p className="text-[10px] tracking-[0.22em] text-[#77766f]">
-                    {label}
-                  </p>
-
-                  <p className="text-sm font-medium sm:text-base">
-                    {value}
-                  </p>
-                </div>
-              )
-            )}
-          </div>
-        </motion.div>
-
-        {/* =================================================
-            VEHICLE GALLERY
-        ================================================== */}
-
-        {galleryImages.length > 0 && (
-          <section className="mt-28 lg:mt-40">
-            <motion.div
-              variants={reveal}
-              initial="hidden"
-              whileInView="visible"
-              viewport={{
-                once: true,
-                amount: 0.15,
-              }}
-              className="border-t border-[#102019]/15 pt-8"
+            <Link
+              href="#gallery"
+              className="mt-6 inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.2em] text-[#a8754d] transition-colors hover:text-[#102019]"
             >
-              <div className="grid gap-10 lg:grid-cols-[0.8fr_1.2fr]">
-                <div>
-                  <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
-                    VEHICLE GALLERY
-                  </p>
-
-                  <h3 className="mt-5 text-4xl font-light leading-[0.95] tracking-[-0.045em] sm:text-5xl lg:text-6xl">
-                    A closer
-                    <br />
-                    look.
-                  </h3>
-                </div>
-
-                <div className="flex items-end justify-between">
-                  <p className="max-w-md text-sm leading-7 text-[#62645f] sm:text-base">
-                    Explore the details, proportions
-                    and finish of this vehicle from
-                    every angle.
-                  </p>
-
-                  <span className="hidden text-[10px] tracking-[0.2em] text-[#77766f] sm:block">
-                    {galleryImages.length
-                      .toString()
-                      .padStart(2, "0")}{" "}
-                    IMAGES
-                  </span>
-                </div>
-              </div>
-            </motion.div>
-
-            {/* FIRST / FEATURED GALLERY IMAGE */}
-
-            <motion.div
-              initial={{
-                opacity: 0,
-                y: shouldReduceMotion
-                  ? 0
-                  : 30,
-              }}
-              whileInView={{
-                opacity: 1,
-                y: 0,
-              }}
-              viewport={{
-                once: true,
-                amount: 0.12,
-              }}
-              transition={{
-                duration: 0.9,
-                ease: "easeOut",
-              }}
-              className="relative mt-12 aspect-[16/9] overflow-hidden bg-[#ddd7cd] lg:mt-16"
-            >
-              <Image
-                src={galleryImages[0]}
-                alt={`${vehicle.make} ${vehicle.model} gallery 01`}
-                fill
-                sizes="100vw"
-                className="object-cover transition-transform duration-[1400ms] hover:scale-[1.02]"
-              />
-
-              <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[#0d1915]/45 to-transparent" />
-
-              <div className="absolute bottom-6 left-6 sm:bottom-8 sm:left-8 lg:bottom-10 lg:left-10">
-                <p className="text-[10px] tracking-[0.2em] text-white/60">
-                  MS / 01
-                </p>
-              </div>
-            </motion.div>
-
-            {/* REMAINING GALLERY IMAGES */}
-
-            {galleryImages.length > 1 && (
-              <div className="mt-6 grid gap-6 sm:grid-cols-2">
-                {galleryImages
-                  .slice(1)
-                  .map((image, index) => (
-                    <motion.div
-                      key={`${image}-${index}`}
-                      initial={{
-                        opacity: 0,
-                        y: shouldReduceMotion
-                          ? 0
-                          : 25,
-                      }}
-                      whileInView={{
-                        opacity: 1,
-                        y: 0,
-                      }}
-                      viewport={{
-                        once: true,
-                        amount: 0.1,
-                      }}
-                      transition={{
-                        duration: 0.8,
-                        delay:
-                          (index % 2) * 0.08,
-                        ease: "easeOut",
-                      }}
-                      className="group relative aspect-[4/3] overflow-hidden bg-[#ddd7cd]"
-                    >
-                      <Image
-                        src={image}
-                        alt={`${vehicle.make} ${vehicle.model} gallery ${
-                          index + 2
-                        }`}
-                        fill
-                        sizes="(max-width: 640px) 100vw, 50vw"
-                        className="object-cover transition-transform duration-[1200ms] group-hover:scale-[1.025]"
-                      />
-
-                      <div className="absolute inset-0 bg-gradient-to-t from-[#0d1915]/40 via-transparent to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-
-                      <div className="absolute bottom-5 left-5">
-                        <span className="text-[10px] tracking-[0.2em] text-white/0 transition-colors duration-500 group-hover:text-white/60">
-                          MS /{" "}
-                          {(index + 2)
-                            .toString()
-                            .padStart(2, "0")}
-                        </span>
-                      </div>
-                    </motion.div>
-                  ))}
-              </div>
-            )}
-          </section>
-        )}
-
-        {/* =================================================
-            SECOND IMAGE
-        ================================================== */}
-
-        <div className="mt-28 grid gap-6 lg:mt-40 lg:grid-cols-[1.35fr_0.65fr]">
-          <motion.div
-            initial={{
-              opacity: 0,
-              y: shouldReduceMotion
-                ? 0
-                : 25,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            viewport={{
-              once: true,
-              amount: 0.15,
-            }}
-            transition={{
-              duration: 0.8,
-              ease: "easeOut",
-            }}
-            className="relative aspect-[4/3] overflow-hidden bg-[#ddd7cd] sm:aspect-[16/10]"
-          >
-            <Image
-              src={detailImage}
-              alt={`${vehicle.make} ${vehicle.model} detail`}
-              fill
-              sizes="(max-width: 1024px) 100vw, 70vw"
-              className="object-cover transition-transform duration-[1400ms] hover:scale-[1.025]"
-            />
+              View Gallery →
+            </Link>
           </motion.div>
 
+          {/* SPECIFICATIONS */}
           <motion.div
-            initial={{
-              opacity: 0,
-              y: shouldReduceMotion
-                ? 0
-                : 25,
-            }}
-            whileInView={{
-              opacity: 1,
-              y: 0,
-            }}
-            viewport={{
-              once: true,
-              amount: 0.15,
-            }}
-            transition={{
-              duration: 0.8,
-              delay: 0.08,
-              ease: "easeOut",
-            }}
-            className="flex min-h-[280px] flex-col justify-start bg-[#17251f] p-8 text-[#f4f0eb] sm:p-10 lg:p-12"
+            variants={reveal}
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.3 }}
           >
-            <p className="text-[10px] tracking-[0.25em] text-[#a8754d]">
-              THE EXPERIENCE
+            <p className="text-[10px] tracking-[0.28em] text-[#a8754d]">
+              SPECIFICATIONS
             </p>
 
-            <h3 className="mt-5 text-4xl font-light leading-[0.95] tracking-[-0.05em] sm:text-5xl">
-              Designed to
-              <br />
-              be experienced.
-            </h3>
-
-            <p className="mt-6 max-w-sm text-sm leading-6 text-white/55">
-              Performance is only one part of
-              the equation. The details are what
-              make the experience complete.
-            </p>
+            <div className="mt-6 grid grid-cols-1 gap-x-10 gap-y-6 sm:grid-cols-2">
+              {specRows.map(({ label, value, icon: Icon }) => (
+                <div key={label} className="flex items-start gap-3">
+                  <Icon className="mt-0.5 h-4 w-4 shrink-0 text-[#a8754d]" strokeWidth={1.4} />
+                  <div>
+                    <p className="text-[10px] tracking-[0.2em] text-[#77766f]">
+                      {label}
+                    </p>
+                    <p className="mt-1 text-sm font-medium">{value}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
           </motion.div>
         </div>
       </div>
